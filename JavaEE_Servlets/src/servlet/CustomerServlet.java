@@ -43,7 +43,6 @@ public class CustomerServlet extends HttpServlet{
                         String address = rst.getString(3);
                         double salary = rst.getDouble(4);
 
-
                         objectBuilder.add("id", id);
                         objectBuilder.add("name", name);
                         objectBuilder.add("address", address);
@@ -57,7 +56,6 @@ public class CustomerServlet extends HttpServlet{
                     writer.print(response.build());
                     break;
             }
-
 
         } catch (SQLException e) {
             e.printStackTrace();

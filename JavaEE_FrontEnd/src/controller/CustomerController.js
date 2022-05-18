@@ -1,10 +1,6 @@
-
-
-
-
 // CRUD Operations
 generateId();
-
+loadAllCustomers();
 $("#btnSave").click(function () {
     saveCustomer();
     clearAll();
@@ -89,14 +85,27 @@ function bindCustomer() {
 function loadAllCustomers() {
 
     $("#customerTB").empty();
-    for (var i of customerDB) {
-        let row = `<tr><td>${i.getCustomerId()}</td><td>${i.getCustomerName()}</td><td>${i.getCustomerAddress()}</td><td>${i.getCustomerSalary()}</td></tr>`;
-        $("#customerTB").append(row);
+    $.ajax({
+        url: "http://localhost:8080/JavaEE_BackEnd/customer?option=GETALL",
+        method: "GET",
+        success:function (resp) {
+            for (const customer of resp.data){
+                let row = `<tr><td>${customer.id}</td><td>${customer.name}</td><td>${customer.address}</td><td>${customer.salary}</td></tr>`;
+                $("#customerTB").append(row);
 
-        bindCustomer();
-        deleteCustomer();
+                bindCustomer();
+                deleteCustomer();
+            }
+        }
+    });
+    /* for (var i of customerDB) {
+         let row = `<tr><td>${i.getCustomerId()}</td><td>${i.getCustomerName()}</td><td>${i.getCustomerAddress()}</td><td>${i.getCustomerSalary()}</td></tr>`;
+         $("#customerTB").append(row);
 
-    }
+         bindCustomer();
+         deleteCustomer();
+
+     }*/
 }
 
 $("#btnSearch").click(function () {
