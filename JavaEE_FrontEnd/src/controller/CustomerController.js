@@ -12,18 +12,35 @@ $("#btnSave").click(function () {
 
 
 function saveCustomer() {
-    let customerID = $("#txtCusID").val();
+    $.ajax({
+       url:"http://localhost:8080/JavaEE_BackEnd/customer",
+       method:"POST",
+       data:$("#customerForm").serialize(),
+        success:function (resp){
+           if (resp.status==200){
+               loadAllCustomers();
+           }else{
+               alert(resp.data)
+           }
+        },
+        error:function (ob,textStatus,error){
+           console.log(ob);
+           console.log(textStatus);
+           console.log(error);
+        }
+    });
+    /*let customerID = $("#txtCusID").val();
     let customerName = $("#txtCusName").val();
     let customerAddress = $("#txtCusAddress").val();
     let customerSalary = $("#txtCusSalary").val();
 
     //create Object
-    /*  var customerObject = {
+    /!*  var customerObject = {
           id: customerID, name: customerName, address: customerAddress, salary: customerSalary
-      };*/
+      };*!/
     var customerObject = new Customer(customerID, customerName, customerAddress, customerSalary);
 
-    customerDB.push(customerObject);
+    customerDB.push(customerObject);*/
 
 }
 
