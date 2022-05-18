@@ -13,20 +13,20 @@ $("#btnSave").click(function () {
 
 function saveCustomer() {
     $.ajax({
-       url:"http://localhost:8080/JavaEE_BackEnd/customer",
-       method:"POST",
-       data:$("#customerForm").serialize(),
-        success:function (resp){
-           if (resp.status==200){
-               loadAllCustomers();
-           }else{
-               alert(resp.data)
-           }
+        url: "http://localhost:8080/JavaEE_BackEnd/customer",
+        method: "POST",
+        data: $("#customerForm").serialize(),
+        success: function (resp) {
+            if (resp.status == 200) {
+                loadAllCustomers();
+            } else {
+                alert(resp.data)
+            }
         },
-        error:function (ob,textStatus,error){
-           console.log(ob);
-           console.log(textStatus);
-           console.log(error);
+        error: function (ob, textStatus, error) {
+            console.log(ob);
+            console.log(textStatus);
+            console.log(error);
         }
     });
     /*let customerID = $("#txtCusID").val();
@@ -105,8 +105,8 @@ function loadAllCustomers() {
     $.ajax({
         url: "http://localhost:8080/JavaEE_BackEnd/customer?option=GETALL",
         method: "GET",
-        success:function (resp) {
-            for (const customer of resp.data){
+        success: function (resp) {
+            for (const customer of resp.data) {
                 let row = `<tr><td>${customer.id}</td><td>${customer.name}</td><td>${customer.address}</td><td>${customer.salary}</td></tr>`;
                 $("#customerTB").append(row);
 
@@ -153,24 +153,35 @@ function clearAll() {
 }
 
 function generateId() {
-    let index = customerDB.length - 1;
-    let id;
-    let temp;
-    if (index != -1) {
-        id = customerDB[customerDB.length - 1].getCustomerId();
-        temp = id.split("-")[1];
-        temp++;
-    }
+    $.ajax({
+        url: "http://localhost:8080/JavaEE_BackEnd/customer?option=GENID",
+        method: "GET",
+        success: function (resp) {
+            if (resp.status==200) {
+                $("#txtCusID").val(resp.data.id);
+            }else{
+               alert( resp.data)
+            }
+        }
+    });
+    /* let index = customerDB.length - 1;
+     let id;
+     let temp;
+     if (index != -1) {
+         id = customerDB[customerDB.length - 1].getCustomerId();
+         temp = id.split("-")[1];
+         temp++;
+     }
 
-    if (index == -1) {
-        $("#txtCusID").val("C00-001");
-    } else if (temp <= 9) {
-        $("#txtCusID").val("C00-00" + temp);
-    } else if (temp <= 99) {
-        $("#txtCusID").val("C00-0" + temp);
-    } else {
-        $("#txtCusID").val("C00-" + temp);
-    }
+     if (index == -1) {
+         $("#txtCusID").val("C00-001");
+     } else if (temp <= 9) {
+         $("#txtCusID").val("C00-00" + temp);
+     } else if (temp <= 99) {
+         $("#txtCusID").val("C00-0" + temp);
+     } else {
+         $("#txtCusID").val("C00-" + temp);
+     }*/
 }
 
 //Validations
