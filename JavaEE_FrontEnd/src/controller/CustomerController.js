@@ -1,24 +1,18 @@
 // CRUD Operations
 generateId();
 loadAllCustomers();
+
 $("#btnSave").click(function () {
-    saveCustomer();
-    clearAll();
-    loadAllCustomers();
-    generateId();
-    loadAllCustomerIds();
-
-});
-
-
-function saveCustomer() {
     $.ajax({
         url: "http://localhost:8080/JavaEE_BackEnd/customer",
         method: "POST",
         data: $("#customerForm").serialize(),
         success: function (resp) {
             if (resp.status == 200) {
+                clearAll();
                 loadAllCustomers();
+                generateId();
+                loadAllCustomerIds();
             } else {
                 alert(resp.data)
             }
@@ -29,72 +23,79 @@ function saveCustomer() {
             console.log(error);
         }
     });
-    /*let customerID = $("#txtCusID").val();
-    let customerName = $("#txtCusName").val();
-    let customerAddress = $("#txtCusAddress").val();
-    let customerSalary = $("#txtCusSalary").val();
 
-    //create Object
-    /!*  var customerObject = {
-          id: customerID, name: customerName, address: customerAddress, salary: customerSalary
-      };*!/
-    var customerObject = new Customer(customerID, customerName, customerAddress, customerSalary);
 
-    customerDB.push(customerObject);*/
+});
 
-}
+
+//function saveCustomer() {
+
+/*let customerID = $("#txtCusID").val();
+let customerName = $("#txtCusName").val();
+let customerAddress = $("#txtCusAddress").val();
+let customerSalary = $("#txtCusSalary").val();
+
+//create Object
+/!*  var customerObject = {
+      id: customerID, name: customerName, address: customerAddress, salary: customerSalary
+  };*!/
+var customerObject = new Customer(customerID, customerName, customerAddress, customerSalary);
+
+customerDB.push(customerObject);*/
+
+//}
 
 $("#btnUpdate").click(function () {
-    var cusOb= {
+    var cusOb = {
         id: $("#txtCusID").val(),
         name: $("#txtCusName").val(),
         address: $("#txtCusAddress").val(),
         salary: $("#txtCusSalary").val()
     }
     $.ajax({
-        url: "http://localhost:8080/JavaEE_BackEnd/customer", method: "PUT", // contentType: "application/json",
-        data: JSON.stringify(cusOb), success: function (resp) {
+        url: "http://localhost:8080/JavaEE_BackEnd/customer",
+        method: "PUT", // contentType: "application/json",
+        data: JSON.stringify(cusOb),
+        success: function (resp) {
             if (resp.status == 200) {
                 loadAllCustomers();
-                clearFields()   //Clear Input Fields
-                $("#updateCustomer").modal('hide');
+                clearAll();   //Clear Input Fields
             } else if (resp.status == 400) {
                 alert(resp.data);
             }
         }
     })
-   /* for (var i = 0; i < customerDB.length; i++) {
-        if (customerDB[i].getCustomerId() == customerID) {
-            customerDB[i].setCustomerName(customerName);
-            customerDB[i].setCustomerAddress(customerAddress);
-            customerDB[i].setCustomerSalary(customerSalary);
-        }
+    /* for (var i = 0; i < customerDB.length; i++) {
+         if (customerDB[i].getCustomerId() == customerID) {
+             customerDB[i].setCustomerName(customerName);
+             customerDB[i].setCustomerAddress(customerAddress);
+             customerDB[i].setCustomerSalary(customerSalary);
+         }
 
-    }
-    generateId();
-    loadAllCustomers();*/
+     }
+     generateId();
+     loadAllCustomers();*/
+});
+
+$("#btnDelete").click(function () {
+    deleteCustomer();
 });
 
 function deleteCustomer() {
-    $("#btnDelete").click(function () {
-        console.log(clickedRowCId);
-        var s = "C00-001";
-        $.ajax({
-            url: `http://localhost:8080/JavaEE_BackEnd/customer?customerID=${clickedRowCId}`,
-            method: "DELETE",
-            success: function (resp) {
-                if (resp.status == 200) {
-                    generateId();
-                    clearAll();
-                    loadAllCustomers();
-                    clearAll();   //Clear Input Fields
-                } else if (resp.status == 400) {
-                    alert(resp.data);
-                }
+    var clickedRowCId = $("#txtCusID").val();
+    $.ajax({
+        url: `http://localhost:8080/JavaEE_BackEnd/customer?customerID=${clickedRowCId}`,
+        method: "DELETE",
+        success: function (resp) {
+            if (resp.status == 200) {
+                generateId();
+                clearAll();
+                loadAllCustomers();
+                clearAll();   //Clear Input Fields
+            } else if (resp.status == 400) {
+                alert(resp.data);
             }
-        });
-
-
+        }
     });
 }
 
@@ -185,10 +186,10 @@ function generateId() {
         url: "http://localhost:8080/JavaEE_BackEnd/customer?option=GENID",
         method: "GET",
         success: function (resp) {
-            if (resp.status==200) {
+            if (resp.status == 200) {
                 $("#txtCusID").val(resp.data.id);
-            }else{
-               alert( resp.data)
+            } else {
+                alert(resp.data)
             }
         }
     });

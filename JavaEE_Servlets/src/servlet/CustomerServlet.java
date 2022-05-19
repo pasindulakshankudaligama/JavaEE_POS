@@ -27,14 +27,14 @@ public class CustomerServlet extends HttpServlet {
         String id = req.getParameter("id");
         String name = req.getParameter("name");
         String address = req.getParameter("address");
-        double salary = Double.parseDouble(req.getParameter("salary"));
+        String salary = req.getParameter("salary");
 
         PrintWriter writer = resp.getWriter();
         Connection connection = null;
 
         try {
             connection = ds.getConnection();
-            PreparedStatement pstm = connection.prepareStatement("INSERT INTO Customer VALUES(?,?,?,?)");
+            PreparedStatement pstm = connection.prepareStatement("INSERT INTO customer VALUES(?,?,?,?)");
             pstm.setObject(1, id);
             pstm.setObject(2, name);
             pstm.setObject(3, address);
@@ -179,7 +179,6 @@ public class CustomerServlet extends HttpServlet {
         String cusAddressUpdate = jsonObject.getString("address");
         String cusSalaryUpdate = jsonObject.getString("salary");
         PrintWriter writer = resp.getWriter();
-        System.out.println(cusIDUpdate + " " + cusAddressUpdate + " " + cusSalaryUpdate + " " + cusNameUpdate);
 
         Connection connection = null;
         try {
@@ -220,10 +219,8 @@ public class CustomerServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         String customerID = req.getParameter("customerID");
-        System.out.println("cus : " + " " + customerID);
         JsonObjectBuilder dataMsgBuilder = Json.createObjectBuilder();
         PrintWriter writer = resp.getWriter();
-
         Connection connection = null;
         try {
             connection = ds.getConnection();

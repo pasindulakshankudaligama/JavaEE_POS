@@ -24,7 +24,6 @@ public class CORSFilter implements Filter {
         resp.addHeader("Access-Control-Allow-Headers", "Content-Type");
 
     }
-
     @Override
     public void destroy() {
 
