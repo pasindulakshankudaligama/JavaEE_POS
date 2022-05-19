@@ -81,12 +81,12 @@ public class CustomerServlet extends HttpServlet {
 
             switch (option) {
                 case "GETALL":
-                    ResultSet rst = connection.prepareStatement("select * from Customer").executeQuery();
+                    ResultSet rst = connection.prepareStatement("SELECT * FROM customer").executeQuery();
                     while (rst.next()) {
                         String id = rst.getString(1);
                         String name = rst.getString(2);
                         String address = rst.getString(3);
-                        double salary = rst.getDouble(4);
+                        int salary = rst.getInt(4);
 
                         objectBuilder.add("id", id);
                         objectBuilder.add("name", name);
@@ -102,7 +102,7 @@ public class CustomerServlet extends HttpServlet {
                     break;
 
                 case "GENID":
-                    ResultSet rst2 = connection.prepareStatement("select id form Customer order by id desc limit 1").executeQuery();
+                    ResultSet rst2 = connection.prepareStatement("SELECT id FROM customer ORDER BY id DESC LIMIT 1").executeQuery();
                     if(rst2.next()){
                         int temp = Integer.parseInt(rst2.getString(1).split("-")[1]);
                         temp+=1;
@@ -121,6 +121,37 @@ public class CustomerServlet extends HttpServlet {
                     response.add("status", 200);
                     writer.print(response.build());
                     break;
+
+                case "SEARCH":
+                    String id = req.getParameter("id");
+                    PreparedStatement pstm = connection.prepareStatement("SELECT * FROM customer WHERE id LIKE ?");
+                    pstm.setObject(1, "%"+id+"%");
+                    ResultSet resultSet = pstm.executeQuery();
+
+                    while (resultSet.next()) {
+                        String cusIDS = resultSet.getString(1);
+                        String cusNameS = resultSet.getString(2);
+                        String cusAddressS = resultSet.getString(3);
+                        int cusSalaryS = resultSet.getInt(4);
+
+                        resp.setStatus(HttpServletResponse.SC_OK);//201
+
+                        objectBuilder.add("id", cusIDS);
+                        objectBuilder.add("name", cusNameS);
+                        objectBuilder.add("address", cusAddressS);
+                        objectBuilder.add("salary", cusSalaryS);
+
+                        arrayBuilder.add(objectBuilder.build());
+
+                        System.out.println(cusIDS + " " + cusNameS + " " + cusAddressS + " " + cusSalaryS);
+                    }
+                    response.add("data", arrayBuilder.build());
+                    response.add("massage", "Done");
+                    response.add("status", "200");
+
+                    writer.print(response.build());
+                    break;
+
             }
 
         } catch (SQLException e) {

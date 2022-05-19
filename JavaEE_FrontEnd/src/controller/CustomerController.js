@@ -52,7 +52,7 @@ $("#btnUpdate").click(function () {
         salary: $("#txtCusSalary").val()
     }
     $.ajax({
-        url: "http://localhost:8080/pos/customer", method: "PUT", // contentType: "application/json",
+        url: "http://localhost:8080/JavaEE_BackEnd/customer", method: "PUT", // contentType: "application/json",
         data: JSON.stringify(cusOb), success: function (resp) {
             if (resp.status == 200) {
                 loadAllCustomers();
@@ -77,15 +77,23 @@ $("#btnUpdate").click(function () {
 
 function deleteCustomer() {
     $("#btnDelete").click(function () {
-        let getClickData = $("#txtCusID").val();
-        for (let i = 0; i < customerDB.length; i++) {
-            if (customerDB[i].getCustomerId() == getClickData) {
-                customerDB.splice(i, 1);
+        console.log(clickedRowCId);
+        var s = "C00-001";
+        $.ajax({
+            url: `http://localhost:8080/JavaEE_BackEnd/customer?customerID=${clickedRowCId}`,
+            method: "DELETE",
+            success: function (resp) {
+                if (resp.status == 200) {
+                    generateId();
+                    clearAll();
+                    loadAllCustomers();
+                    clearAll();   //Clear Input Fields
+                } else if (resp.status == 400) {
+                    alert(resp.data);
+                }
             }
-        }
-        generateId();
-        clearAll();
-        loadAllCustomers();
+        });
+
 
     });
 }
@@ -140,27 +148,33 @@ function loadAllCustomers() {
 }
 
 $("#btnSearch").click(function () {
-    var searchID = $("#txtSearchCusID").val();
-
-    var response = searchCustomer(searchID);
-    if (response) {
-        $("#txtCusID").val(response.getCustomerId());
-        $("#txtCusName").val(response.getCustomerName());
-        $("#txtCusAddress").val(response.getCustomerAddress());
-        $("#txtCusSalary").val(response.getCustomerSalary());
-    } else {
-        clearAll();
-        alert("No Such a Customer");
+    if (!$("#txtSearchCusID").val()) {
+        loadAllCustomers();
+        return;
     }
-});
 
-function searchCustomer(id) {
-    for (let i = 0; i < customerDB.length; i++) {
-        if (customerDB[i].getCustomerId() == id) {
-            return customerDB[i];
+    // let btns = "<button class='btn btn-warning' data-bs-target='#updateCustomer' data-bs-toggle='modal'><i class='bi bi-arrow-clockwise'></i></button> <button class='btn btn-danger cus-delete'><i class='bi bi-trash'></i></button>";
+    $.ajax({
+        url: "http://localhost:8080/JavaEE_BackEnd/customer?option=SEARCH", method: "GET", data: {
+            id: $("#txtSearchCusID").val()
+        }, success: function (resp) {
+            if (resp.status == 200) {
+                $("#customerTB").empty();
+                for (const customer of resp.data) {
+                    let row = `<tr><td>${customer.id}</td><td>${customer.name}</td><td>${customer.address}</td><td>${customer.salary}</td></tr>`;
+                    $("#customerTB").append(row);
+                    bindCustomer();
+                    deleteCustomer();
+                }
+            } else {
+                alert(resp.data);
+                loadAllCustomers(); //load all customers
+                clearAll();   //Clear Input Fields
+            }
         }
-    }
-}
+    });
+
+});
 
 function clearAll() {
     $("#txtCusID,#txtCusName,#txtCusAddress,#txtCusSalary,#txtSearchCusID").val("");    // Clear input Fields (Add)
