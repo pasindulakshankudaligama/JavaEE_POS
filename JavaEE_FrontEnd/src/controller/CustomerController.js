@@ -45,11 +45,25 @@ function saveCustomer() {
 }
 
 $("#btnUpdate").click(function () {
-    let customerID = $("#txtCusID").val();
-    let customerName = $("#txtCusName").val();
-    let customerAddress = $("#txtCusAddress").val();
-    let customerSalary = $("#txtCusSalary").val();
-    for (var i = 0; i < customerDB.length; i++) {
+    var cusOb= {
+        id: $("#txtCusID").val(),
+        name: $("#txtCusName").val(),
+        address: $("#txtCusAddress").val(),
+        salary: $("#txtCusSalary").val()
+    }
+    $.ajax({
+        url: "http://localhost:8080/pos/customer", method: "PUT", // contentType: "application/json",
+        data: JSON.stringify(cusOb), success: function (resp) {
+            if (resp.status == 200) {
+                loadAllCustomers();
+                clearFields()   //Clear Input Fields
+                $("#updateCustomer").modal('hide');
+            } else if (resp.status == 400) {
+                alert(resp.data);
+            }
+        }
+    })
+   /* for (var i = 0; i < customerDB.length; i++) {
         if (customerDB[i].getCustomerId() == customerID) {
             customerDB[i].setCustomerName(customerName);
             customerDB[i].setCustomerAddress(customerAddress);
@@ -58,7 +72,7 @@ $("#btnUpdate").click(function () {
 
     }
     generateId();
-    loadAllCustomers();
+    loadAllCustomers();*/
 });
 
 function deleteCustomer() {
