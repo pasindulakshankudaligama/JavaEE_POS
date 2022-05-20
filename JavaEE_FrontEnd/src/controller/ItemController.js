@@ -90,19 +90,36 @@ $("#btnItemUpdate").click(function () {
 });
 
 /*_________Delete Item___________*/
+
+
+$("#btnItemDelete").click(function () {
+   deleteItem();
+    });
+    /*let getClickItemData = $("#txtItemCode").val();
+    for (let i = 0; i < itemDB.length; i++) {
+        if (itemDB[i].getItemCode() == getClickItemData) {
+            itemDB.splice(i, 1);
+        }
+    }
+    loadAllItems();
+    clearAll();
+    generateItemId();*/
 function deleteItem() {
-    $("#btnItemDelete").click(function () {
-        let getClickItemData = $("#txtItemCode").val();
-        for (let i = 0; i < itemDB.length; i++) {
-            if (itemDB[i].getItemCode() == getClickItemData) {
-                itemDB.splice(i, 1);
+    var clickedRowIId = $("#txtItemCode").val();
+    $.ajax({
+        url: `http://localhost:8080/JavaEE_BackEnd/item?itemCode=${clickedRowIId}`,
+        method: "DELETE",
+        success: function (resp) {
+            if (resp.status == 200) {
+                generateItemId();
+                clearAll();
+                loadAllItems();
+                clearAll();   //Clear Input Fields
+            } else if (resp.status == 400) {
+                alert(resp.data);
             }
         }
-        loadAllItems();
-        clearAll();
-        generateItemId();
-
-    });
+        });
 }
 
 /*_________clear button___________*/
