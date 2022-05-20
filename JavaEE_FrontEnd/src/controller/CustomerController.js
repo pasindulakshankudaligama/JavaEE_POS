@@ -27,7 +27,6 @@ $("#btnSave").click(function () {
 
 });
 
-
 //function saveCustomer() {
 
 /*let customerID = $("#txtCusID").val();

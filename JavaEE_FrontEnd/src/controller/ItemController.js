@@ -4,15 +4,37 @@ generateItemId();
 loadAllItems();
 
 $("#btnItemSave").click(function () {
-    saveItem();
+    $.ajax({
+        url: "http://localhost:8080/JavaEE_BackEnd/item",
+        method:"POST",
+        data: $("#itemForm").serialize(),
+        success: function (resp){
+            if (resp.status==200){
+                clearAll();
+                loadAllItems();
+                generateItemId();
+                loadAllCustomerIds();
+            }else {
+                alert(resp.data)
+            }
+        },
+        error:function (ob,textStatus,error){
+            console.log(ob);
+            console.log(textStatus);
+            console.log(error);
+        }
+    });
+
+
+   /* saveItem();
     clearAll();
     loadAllItems();
     generateItemId();
-    loadAllItemCodes();
+    loadAllItemCodes();*/
 
 });
 
-
+/*
 function saveItem() {
     let itemCode = $("#txtItemCode").val();
     let itemName = $("#txtItemName").val();
@@ -20,16 +42,16 @@ function saveItem() {
     let unitPrice = $("#txtUnitPrice").val();
 
     //create Object
-    /* var itemObject = {
+    /!* var itemObject = {
          code: itemCode,
          name: itemName,
          qTY: itemQTY,
          unitPrice: unitPrice
      };
- */
+ *!/
     var itemObject = new Item(itemCode, itemName, itemQTY, unitPrice);
     itemDB.push(itemObject);
-}
+}*/
 
 
 /*_________Update Customer___________*/

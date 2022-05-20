@@ -24,6 +24,52 @@ public class ItemServlet extends HttpServlet {
     DataSource ds;
 
     @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        String code = req.getParameter("code");
+        String description = req.getParameter("description");
+        String qtyOnHand = req.getParameter("qtyOnHand");
+        String unitPrice = req.getParameter("unitPrice");
+
+        PrintWriter writer = resp.getWriter();
+        Connection connection = null;
+
+        try {
+            connection = ds.getConnection();
+            PreparedStatement pstm = connection.prepareStatement("INSERT INTO item VALUES(?,?,?,?)");
+            pstm.setObject(1,code);
+            pstm.setObject(2,description);
+            pstm.setObject(3,qtyOnHand);
+            pstm.setObject(4,unitPrice);
+
+            if (pstm.executeUpdate()>0) {
+                JsonObjectBuilder response = Json.createObjectBuilder();
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                response.add("status", 200);
+                response.add("message", "Successfully added");
+                response.add("data", "");
+                writer.print(response.build());
+
+            }
+
+        } catch (SQLException e) {
+            JsonObjectBuilder response = Json.createObjectBuilder();
+            resp.setStatus(HttpServletResponse.SC_OK);
+            response.add("status", 400);
+            response.add("message", "error");
+            response.add("data", e.getLocalizedMessage());
+            writer.print(response.build());
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -80,10 +126,10 @@ public class ItemServlet extends HttpServlet {
                 case "SEARCH":
                     String code = req.getParameter("code");
                     PreparedStatement pstm = connection.prepareStatement("SELECT * FROM item WHERE code LIKE ?");
-                    pstm.setObject(1,"%"+code+"%");
+                    pstm.setObject(1, "%" + code + "%");
                     ResultSet resultSet = pstm.executeQuery();
 
-                    while (resultSet.next()){
+                    while (resultSet.next()) {
                         String itemCodes = resultSet.getString(1);
                         String itemDescriptions = resultSet.getString(2);
                         String itemQtyOnHands = resultSet.getString(3);
@@ -91,10 +137,10 @@ public class ItemServlet extends HttpServlet {
 
                         resp.setStatus(HttpServletResponse.SC_OK);
 
-                        objectBuilder.add("code",itemCodes);
-                        objectBuilder.add("description",itemDescriptions);
-                        objectBuilder.add("qtyOnHand",itemQtyOnHands);
-                        objectBuilder.add("unitPrice",itemUnitPrices);
+                        objectBuilder.add("code", itemCodes);
+                        objectBuilder.add("description", itemDescriptions);
+                        objectBuilder.add("qtyOnHand", itemQtyOnHands);
+                        objectBuilder.add("unitPrice", itemUnitPrices);
                         arrayBuilder.add(objectBuilder.build());
                     }
                     response.add("data", arrayBuilder.build());
@@ -103,7 +149,6 @@ public class ItemServlet extends HttpServlet {
 
                     writer.print(response.build());
                     break;
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
