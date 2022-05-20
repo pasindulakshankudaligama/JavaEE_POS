@@ -1,6 +1,7 @@
 //crud
 
 generateItemId();
+loadAllItems();
 
 $("#btnItemSave").click(function () {
     saveItem();
@@ -91,13 +92,26 @@ function bindItem() {
 
 function loadAllItems() {
     $("#itemTB").empty();
-    for (var i of itemDB) {
+    $.ajax({
+      url: "http://localhost:8080/JavaEE_BackEnd/item?option=GETALL",
+        method:"GET",
+        success: function (resp){
+          for (const item of resp.data){
+              let row = `<tr><td>${item.code}</td><td>${item.description}</td><td>${item.qtyOnHand}</td><td>${item.unitPrice}</td></tr>`;
+              $("#itemTB").append(row);
+              bindItem();
+              deleteItem();
+          }
+        }
+    });
+
+   /* for (var i of itemDB) {
         let row = `<tr><td>${i.getItemCode()}</td><td>${i.getItemName()}</td><td>${i.getItemQTY()}</td><td>${i.getUnitPrice()}</td></tr>`;
         $("#itemTB").append(row);
 
         bindItem();
         deleteItem();
-    }
+    }*/
 }
 
 $("#btnItemSearch").click(function () {
