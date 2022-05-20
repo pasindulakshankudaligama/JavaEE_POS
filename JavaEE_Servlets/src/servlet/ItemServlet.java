@@ -1,9 +1,7 @@
 package servlet;
 
 import javax.annotation.Resource;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
+import javax.json.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,12 +35,12 @@ public class ItemServlet extends HttpServlet {
         try {
             connection = ds.getConnection();
             PreparedStatement pstm = connection.prepareStatement("INSERT INTO item VALUES(?,?,?,?)");
-            pstm.setObject(1,code);
-            pstm.setObject(2,description);
-            pstm.setObject(3,qtyOnHand);
-            pstm.setObject(4,unitPrice);
+            pstm.setObject(1, code);
+            pstm.setObject(2, description);
+            pstm.setObject(3, qtyOnHand);
+            pstm.setObject(4, unitPrice);
 
-            if (pstm.executeUpdate()>0) {
+            if (pstm.executeUpdate() > 0) {
                 JsonObjectBuilder response = Json.createObjectBuilder();
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 response.add("status", 200);
@@ -60,7 +58,7 @@ public class ItemServlet extends HttpServlet {
             response.add("data", e.getLocalizedMessage());
             writer.print(response.build());
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
@@ -161,4 +159,53 @@ public class ItemServlet extends HttpServlet {
         }
 
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        JsonReader reader = Json.createReader(req.getReader());
+        JsonObject jsonObject = reader.readObject();
+
+        String itemCodeUpdate = jsonObject.getString("code");
+        String itemDesUpdate = jsonObject.getString("description");
+        String itemQTYUpdate = jsonObject.getString("qtyOnHand");
+        String itemUnitPriceUpdate = jsonObject.getString("unitPrice");
+        PrintWriter writer = resp.getWriter();
+        Connection connection = null;
+
+        try {
+            connection = ds.getConnection();
+            PreparedStatement pstm = connection.prepareStatement("UPDATE item SET description=?, qtyOnHand=?, unitPrice=? WHERE code=?");
+            pstm.setObject(1,itemDesUpdate);
+            pstm.setObject(2,itemQTYUpdate);
+            pstm.setObject(3,itemUnitPriceUpdate);
+            pstm.setObject(4,itemCodeUpdate);
+
+            if (pstm.executeUpdate() > 0) {
+                JsonObjectBuilder response = Json.createObjectBuilder();
+                resp.setStatus(HttpServletResponse.SC_CREATED);//201
+                response.add("status", 200);
+                response.add("message", "Successfully Updated");
+                response.add("data", "");
+                writer.print(response.build());
+            }
+
+        } catch (SQLException e) {
+            JsonObjectBuilder response = Json.createObjectBuilder();
+            response.add("status", 400);
+            response.add("message", "Error");
+            response.add("data", e.getLocalizedMessage());
+            writer.print(response.build());
+            resp.setStatus(HttpServletResponse.SC_OK); //200
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
 }
