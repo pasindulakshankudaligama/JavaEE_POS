@@ -115,7 +115,31 @@ function loadAllItems() {
 }
 
 $("#btnItemSearch").click(function () {
-    var searchItemCode = $("#txtSearchItemCode").val();
+
+    $.ajax({
+       url:"http://localhost:8080/JavaEE_BackEnd/item?option=SEARCH",
+        method:"GET",
+        data:{
+           code: $("#btnItemSearch").val()
+        },
+        success: function (resp){
+           if (resp.status==200){
+
+            $("#itemTB").empty();
+            for (const item of resp.data){
+                let row = `<tr><td>${item.code}</td><td>${item.description}</td><td>${item.qtyOnHand}</td><td>${item.unitPrice}</td></tr>`;
+                $("#itemTB").append(row);
+                bindItem();
+                deleteItem();
+            }
+        }else {
+             alert(resp.data);
+             loadAllItems();
+             clearAll();
+           }
+        }
+    });
+   /* var searchItemCode = $("#txtSearchItemCode").val();
 
     var response = searchItem(searchItemCode);
     if (response) {
@@ -126,24 +150,36 @@ $("#btnItemSearch").click(function () {
     } else {
         clearAll();
         alert("No Such a item");
-    }
+    }*/
 });
 
-
+/*
 function searchItem(id) {
     for (let i = 0; i < itemDB.length; i++) {
         if (itemDB[i].id == id) {
             return itemDB[i];
         }
     }
-}
+}*/
 
 function clearAll() {
     $("#txtItemCode,#txtItemName,#txtItemQTY,#txtUnitPrice,#txtSearchItemCode").val("");    // Clear input Fields (Add)
 }
 
 function generateItemId() {
-    let index = itemDB.length - 1;
+
+    $.ajax({
+       url: "http://localhost:8080/JavaEE_BackEnd/item?option=GENID",
+       method:"GET",
+        success: function (resp){
+           if (resp.status==200){
+               $("#txtItemCode").val(resp.data.code);
+           }else{
+               alert(resp.data);
+           }
+        }
+    });
+  /*  let index = itemDB.length - 1;
     let id;
     let temp;
     if (index != -1) {
@@ -160,5 +196,5 @@ function generateItemId() {
         $("#txtItemCode").val("I00-0" + temp);
     } else {
         $("#txtItemCode").val("I00-" + temp);
-    }
+    }*/
 }

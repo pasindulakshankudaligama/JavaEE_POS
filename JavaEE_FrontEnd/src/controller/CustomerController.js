@@ -156,7 +156,8 @@ $("#btnSearch").click(function () {
 
     // let btns = "<button class='btn btn-warning' data-bs-target='#updateCustomer' data-bs-toggle='modal'><i class='bi bi-arrow-clockwise'></i></button> <button class='btn btn-danger cus-delete'><i class='bi bi-trash'></i></button>";
     $.ajax({
-        url: "http://localhost:8080/JavaEE_BackEnd/customer?option=SEARCH", method: "GET", data: {
+        url: "http://localhost:8080/JavaEE_BackEnd/customer?option=SEARCH", method: "GET",
+        data: {
             id: $("#txtSearchCusID").val()
         }, success: function (resp) {
             if (resp.status == 200) {
@@ -189,7 +190,7 @@ function generateId() {
             if (resp.status == 200) {
                 $("#txtCusID").val(resp.data.id);
             } else {
-                alert(resp.data)
+                alert(resp.data);
             }
         }
     });

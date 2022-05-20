@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -33,10 +34,10 @@ public class ItemServlet extends HttpServlet {
 
         try {
             String option = req.getParameter("option");
-            connection  = ds.getConnection();
+            connection = ds.getConnection();
 
-            switch (option){
-                case "GETALL" :
+            switch (option) {
+                case "GETALL":
                     ResultSet rst = connection.prepareStatement("SELECT * FROM item").executeQuery();
                     while (rst.next()) {
                         String code = rst.getString(1);
@@ -44,21 +45,69 @@ public class ItemServlet extends HttpServlet {
                         int qtyOnHand = rst.getInt(3);
                         double unitPrice = rst.getDouble(4);
 
-                        objectBuilder.add("code",code);
-                        objectBuilder.add("description",description);
-                        objectBuilder.add("qtyOnHand",qtyOnHand);
-                        objectBuilder.add("unitPrice",unitPrice);
+                        objectBuilder.add("code", code);
+                        objectBuilder.add("description", description);
+                        objectBuilder.add("qtyOnHand", qtyOnHand);
+                        objectBuilder.add("unitPrice", unitPrice);
                         arrayBuilder.add(objectBuilder.build());
                     }
-                    response.add("status",200);
-                    response.add("message","Done");
-                    response.add("data",arrayBuilder.build());
+                    response.add("status", 200);
+                    response.add("message", "Done");
+                    response.add("data", arrayBuilder.build());
                     writer.print(response.build());
                     break;
+
+                case "GENID":
+                    ResultSet rst2 = connection.prepareStatement("SELECT code FROM item ORDER BY code DESC LIMIT 1").executeQuery();
+                    if (rst2.next()) {
+                        int temp = Integer.parseInt(rst2.getString(1).split("-")[1]);
+                        temp += 1;
+                        if (temp < 10) {
+                            objectBuilder.add("code", "I00-00" + temp);
+                        } else if (temp < 100) {
+                            objectBuilder.add("code", "I00-0" + temp);
+                        } else if (temp < 1000) {
+                            objectBuilder.add("code", "I00-" + temp);
+                        } else {
+                            objectBuilder.add("code", "I00-000");
+                        }
+                        response.add("data", objectBuilder.build());
+                        response.add("message", "Done");
+                        response.add("status", 200);
+                        writer.print(response.build());
+                        break;
+                    }
+                case "SEARCH":
+                    String code = req.getParameter("code");
+                    PreparedStatement pstm = connection.prepareStatement("SELECT * FROM item WHERE code LIKE ?");
+                    pstm.setObject(1,"%"+code+"%");
+                    ResultSet resultSet = pstm.executeQuery();
+
+                    while (resultSet.next()){
+                        String itemCodes = resultSet.getString(1);
+                        String itemDescriptions = resultSet.getString(2);
+                        String itemQtyOnHands = resultSet.getString(3);
+                        String itemUnitPrices = resultSet.getString(4);
+
+                        resp.setStatus(HttpServletResponse.SC_OK);
+
+                        objectBuilder.add("code",itemCodes);
+                        objectBuilder.add("description",itemDescriptions);
+                        objectBuilder.add("qtyOnHand",itemQtyOnHands);
+                        objectBuilder.add("unitPrice",itemUnitPrices);
+                        arrayBuilder.add(objectBuilder.build());
+                    }
+                    response.add("data", arrayBuilder.build());
+                    response.add("massage", "Done");
+                    response.add("status", "200");
+
+                    writer.print(response.build());
+                    break;
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
