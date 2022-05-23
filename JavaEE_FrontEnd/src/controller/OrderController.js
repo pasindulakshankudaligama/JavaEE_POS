@@ -132,14 +132,29 @@ function selectedCustomer(CustomerId) {
 
 /* Load Item Data To input Fields */
 function selectedItem(ItemId) {
-    for (const i in itemDB) {
+    $.ajax({
+        url:`http://localhost:8080/JavaEE_BackEnd/order?option=SELECTEDITEMDETAILS&itemCode=${ItemId}`,
+        method:"GET",
+        success:function (resp){
+            if (resp.status == 200) {
+                for (const item of resp.data) {
+                    $("#itemName").val(item.itemName);
+                    $("#qtyOnHand").val(item.qtyOnHand);
+                    $("#price").val(item.unitPrice);
+                }
+            }else{
+                alert(resp.data);
+            }
+        }
+    });
+   /* for (const i in itemDB) {
         if (itemDB[i].getItemCode() == ItemId) {
             let element = itemDB[i];
             $("#itemName").val(element.getItemName());
             $("#qtyOnHand").val(element.getItemQTY());
             $("#price").val(element.getUnitPrice());
         }
-    }
+    }*/
 }
 
 
