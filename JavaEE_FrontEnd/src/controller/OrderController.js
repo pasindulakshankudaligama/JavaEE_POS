@@ -46,7 +46,8 @@ $("#cash1").keyup(function (event) {
 /* Load Customer ID's to Combo Box - Function */
 function loadAllCustomerIds() {
     $("#cmb").empty();
-
+    let cusHint = `<option disabled selected>Select Customer ID</option>`;
+    $("#cmb").append(cusHint);
     $.ajax({
         url: "http://localhost:8080/JavaEE_BackEnd/order?option=LOADCUSIDS",
         method: "GET",
@@ -75,6 +76,8 @@ function loadAllCustomerIds() {
 /* Load Item ID's to Combo Box - Function */
 function loadAllItemCodes() {
     $("#idCmb").empty();
+    let itemHint = `<option disabled selected>Select Item Code</option>`;
+    $("#idCmb").append(itemHint);
     $.ajax({
         url: "http://localhost:8080/JavaEE_BackEnd/order?option=LOADITEMIDS",
         method: "GET",
@@ -102,14 +105,29 @@ function loadAllItemCodes() {
 
 
 function selectedCustomer(CustomerId) {
-    for (const i in customerDB) {
+    $.ajax({
+        url:`http://localhost:8080/JavaEE_BackEnd/order?option=SELECTEDCUSDETAILS&cusId=${CustomerId}`,
+        method:"GET",
+        success:function (resp){
+            if (resp.status == 200) {
+                for (const customer of resp.data) {
+                    $("#cusName").val(customer.name);
+                    $("#salary").val(customer.salary);
+                    $("#address").val(customer.address);
+                }
+            }else{
+                alert(resp.data);
+            }
+        }
+    });
+   /* for (const i in customerDB) {
         if (customerDB[i].getCustomerId() == CustomerId) {
             let element = customerDB[i];
             $("#cusName").val(element.getCustomerName());
             $("#salary").val(element.getCustomerSalary());
             $("#address").val(element.getCustomerAddress());
         }
-    }
+    }*/
 }
 
 /* Load Item Data To input Fields */

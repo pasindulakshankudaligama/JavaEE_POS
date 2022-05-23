@@ -63,8 +63,25 @@ public class OrderPurchaseServlet extends HttpServlet {
                     writer.print(response.build());
                     break;
 
-                case "":
-
+                case "SELECTEDCUSDETAILS":
+                    String cusId = req.getParameter("cusId");
+                    pstm = connection.prepareStatement("SELECT * FROM customer WHERE id=?");
+                    pstm.setObject(1, cusId);
+                     rst = pstm.executeQuery();
+                    if (rst.next()) {
+                        String name = rst.getString(2);
+                        String address = rst.getString(3);
+                        String salary = rst.getString(4);
+                        objectBuilder.add("name", name);
+                        objectBuilder.add("address", address);
+                        objectBuilder.add("salary", salary);
+                        arrayBuilder.add(objectBuilder.build());
+                    }
+                    response.add("data", arrayBuilder.build());
+                    response.add("message", "Done");
+                    response.add("status", 200);
+                    writer.print(response.build());
+                    break;
             }
 
         } catch (SQLException e) {
