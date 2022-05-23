@@ -6,27 +6,27 @@ setDate();
 disableEdit();
 
 //add to cart
-$("#addBtn").click(function(){
+$("#addBtn").click(function () {
     addItemToCart();
 });
 
-$("#btnPurchase").click(function(){
+$("#btnPurchase").click(function () {
     purchaseOrder();
 });
 
 
-$("#cmb").change(function(e){
+$("#cmb").change(function (e) {
     selectedCustomerId = $('#cmb').find(":selected").text();
     selectedCustomer(selectedCustomerId);
 
 });
 
-$("#idCmb").change(function(){
+$("#idCmb").change(function () {
     selectedItemId = $('#idCmb').find(":selected").text();
     selectedItem(selectedItemId);
 });
 
-$("#dis").keyup(function(event){
+$("#dis").keyup(function (event) {
     discountCal();
 
 });
@@ -42,18 +42,32 @@ $("#cash1").keyup(function (event) {
 });
 
 
-
 /* Load Customer ID's to Combo Box - Function */
 function loadAllCustomerIds() {
     $("#cmb").empty();
 
-    let cusHint = `<option selected>Select Customer ID</option>`;
-    $("#cmb").append(cusHint);
+    $.ajax({
+        url: "http://localhost:8080/JavaEE_BackEnd/order?option=LOADCUSIDS",
+        method: "GET",
+        success: function (resp) {
+            if (resp.status == 200) {
+                for (const customer of resp.data) {
+                    let option = `<option value="${customer.id}">${customer.id}</option>`;
+                    $("#cmb").append(option);
+                }
+            }else{
+                alert(resp.data);
+            }
+        }
+    });
 
-    for (let i in customerDB) {
-        let option = `<option value="${customerDB[i].getCustomerId()}">${customerDB[i].getCustomerId()}</option>`;
-        $("#cmb").append(option);
-    }
+    /*  let cusHint = `<option selected>Select Customer ID</option>`;
+      $("#cmb").append(cusHint);
+
+      for (let i in customerDB) {
+          let option = `<option value="${customerDB[i].getCustomerId()}">${customerDB[i].getCustomerId()}</option>`;
+          $("#cmb").append(option);
+      }*/
 
 }
 
@@ -71,10 +85,9 @@ function loadAllItemCodes() {
 }
 
 
-
 function selectedCustomer(CustomerId) {
     for (const i in customerDB) {
-        if (customerDB[i].getCustomerId()==CustomerId) {
+        if (customerDB[i].getCustomerId() == CustomerId) {
             let element = customerDB[i];
             $("#cusName").val(element.getCustomerName());
             $("#salary").val(element.getCustomerSalary());
@@ -86,7 +99,7 @@ function selectedCustomer(CustomerId) {
 /* Load Item Data To input Fields */
 function selectedItem(ItemId) {
     for (const i in itemDB) {
-        if (itemDB[i].getItemCode()==ItemId) {
+        if (itemDB[i].getItemCode() == ItemId) {
             let element = itemDB[i];
             $("#itemName").val(element.getItemName());
             $("#qtyOnHand").val(element.getItemQTY());
@@ -126,11 +139,12 @@ function generateOrderId() {
 function setDate() {
     let d = new Date();
     let dd = d.toISOString().split("T")[0].split("-");
-    $("#iDate").val(dd[0]+"-"+dd[1]+"-"+dd[2]);
-    $("#iDate").text(dd[0]+"-"+dd[1]+"-"+dd[2]);
+    $("#iDate").val(dd[0] + "-" + dd[1] + "-" + dd[2]);
+    $("#iDate").text(dd[0] + "-" + dd[1] + "-" + dd[2]);
 }
 
 var fullTotal = 0;
+
 function addItemToCart() {
     let id = selectedItemId;
     let iName = $("#itemName").val();
@@ -141,7 +155,7 @@ function addItemToCart() {
     let total = 0;
 
     // Check Qty Availability
-    if (iQtyOnHand+1 <= iOrderQTY) {
+    if (iQtyOnHand + 1 <= iOrderQTY) {
         alert("Enter Valid QTY");
         $("#oQty").val("");
         return;
@@ -155,26 +169,26 @@ function addItemToCart() {
     }
 
     let newQty = 0;
-    let newTotal= 0;
+    let newTotal = 0;
 
-    if (checkDuplicates(id)==-1) {
+    if (checkDuplicates(id) == -1) {
         total = iOrderQTY * iPrice;
         fullTotal = fullTotal + total;
         let row =
             `<tr><td>${id}</td><td>${iName}</td><td>${iPrice}</td><td>${iOrderQTY}<td>${total}</td></tr>`;
         $("#OrderTB").append(row);
-        $("#lblFullTotal").text(fullTotal+" LKR");
+        $("#lblFullTotal").text(fullTotal + " LKR");
         clearInputItems();
 
-    }else{
+    } else {
 
         let rowNo = checkDuplicates(id);
         newQty = iOrderQTY;
         let oldQty = parseInt($($('#OrderTB>tr').eq(rowNo).children(":eq(3)")).text());
         let oldTotal = parseInt($($('#OrderTB>tr').eq(rowNo).children(":eq(4)")).text());
 
-        fullTotal = fullTotal-oldTotal;
-        newQty = parseInt(oldQty) + parseInt(newQty) ;
+        fullTotal = fullTotal - oldTotal;
+        newQty = parseInt(oldQty) + parseInt(newQty);
         newTotal = newQty * iPrice;
         fullTotal = fullTotal + newTotal;
 
@@ -182,7 +196,7 @@ function addItemToCart() {
         $('#OrderTB tr').eq(rowNo).children(":eq(3)").text(newQty);
         $('#OrderTB tr').eq(rowNo).children(":eq(4)").text(newTotal);
 
-        $("#lblFullTotal").text(fullTotal+" LKR");
+        $("#lblFullTotal").text(fullTotal + " LKR");
         alert("test");
         clearInputItems();
     }
@@ -216,15 +230,15 @@ function discountCal() {
     console.log(typeof discounted_price);
     // $("#lblSubTotal").text(discounted_price +" LKR");
     $("#lblSubTotal").text(discounted_price); */
-    var discount =0;
-    var discounted_price=0;
-    var tempDiscount=0;
+    var discount = 0;
+    var discounted_price = 0;
+    var tempDiscount = 0;
 
     discount = parseInt($("#dis").val());
-    tempDiscount = 100-discount;
-    discounted_price = (tempDiscount*fullTotal)/100;
+    tempDiscount = 100 - discount;
+    discounted_price = (tempDiscount * fullTotal) / 100;
     console.log(typeof discounted_price);
-    $("#lblSubTotal").text(discounted_price +" LKR");
+    $("#lblSubTotal").text(discounted_price + " LKR");
 
 }
 
@@ -238,7 +252,7 @@ function purchaseOrder() {
     let total = $("#lblFullTotal").text();
     let subTotal = $("#lblSubTotal").text();
 
-    var orderObj = new Orders(orderId,customer,orderDate,discount,total,subTotal);
+    var orderObj = new Orders(orderId, customer, orderDate, discount, total, subTotal);
     orderDB.push(orderObj);
 
     for (let i = 0; i < $('#OrderTB tr').length; i++) {
@@ -249,7 +263,7 @@ function purchaseOrder() {
         tblItemQty = $('#OrderTB').children().eq(i).children().eq(3).text();
         tblItemTotal = $('#OrderTB').children().eq(i).children().eq(4).text();
 
-        var orderDetailObj = new OrderDetails(orderId,tblItemId,tblItemName,tblItemPrice,tblItemQty,tblItemTotal);
+        var orderDetailObj = new OrderDetails(orderId, tblItemId, tblItemName, tblItemPrice, tblItemQty, tblItemTotal);
         orderDetailsDB.push(orderDetailObj);
     }
 
