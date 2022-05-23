@@ -13,7 +13,7 @@ $("#btnItemSave").click(function () {
                 clearAll();
                 loadAllItems();
                 generateItemId();
-                loadAllCustomerIds();
+                loadAllItemCodes();
             } else {
                 alert(resp.data)
             }

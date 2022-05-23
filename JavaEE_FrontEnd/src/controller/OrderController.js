@@ -4,7 +4,8 @@ var selectedCustomerId;
 generateOrderId();
 setDate();
 disableEdit();
-
+loadAllCustomerIds();
+loadAllItemCodes();
 //add to cart
 $("#addBtn").click(function () {
     addItemToCart();
@@ -74,14 +75,29 @@ function loadAllCustomerIds() {
 /* Load Item ID's to Combo Box - Function */
 function loadAllItemCodes() {
     $("#idCmb").empty();
+    $.ajax({
+        url: "http://localhost:8080/JavaEE_BackEnd/order?option=LOADITEMIDS",
+        method: "GET",
+        success: function (resp) {
+            if (resp.status == 200) {
+                for (const item of resp.data) {
+                    let option = `<option value="${item.code}">${item.code}</option>`;
+                    $("#idCmb").append(option);
+                }
+            }else{
+                alert(resp.data);
+            }
+        }
+    });
 
-    let itemHint = `<option disabled selected>Select Item ID</option>`;
+
+  /*  let itemHint = `<option disabled selected>Select Item ID</option>`;
     $("#idCmb").append(itemHint);
 
     for (let i in itemDB) {
         let option = `<option value="${itemDB[i].getItemCode()}">${itemDB[i].getItemCode()}</option>`;
         $("#idCmb").append(option);
-    }
+    }*/
 }
 
 

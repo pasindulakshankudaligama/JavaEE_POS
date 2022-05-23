@@ -31,35 +31,54 @@ public class OrderPurchaseServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         Connection connection = null;
 
-     try {
-      connection = ds.getConnection();
-      ResultSet rst;
-      PreparedStatement pstm;
-      String option = req.getParameter("option");
-      switch (option){
-          case "LOADCUSIDS":
-               rst = connection.prepareStatement("SELECT id FROM customer").executeQuery();
-              while (rst.next()) {
-                  String id = rst.getString(1);
-                  objectBuilder.add("id",id);
-                  arrayBuilder.add(objectBuilder.build());
-              }
-              response.add("data",arrayBuilder.build());
-              response.add("message","Done");
-              response.add("status",200);
-              writer.print(response.build());
-              break;
-      }
+        try {
+            connection = ds.getConnection();
+            ResultSet rst;
+            PreparedStatement pstm;
+            String option = req.getParameter("option");
+            switch (option) {
+                case "LOADCUSIDS":
+                    rst = connection.prepareStatement("SELECT id FROM customer").executeQuery();
+                    while (rst.next()) {
+                        String id = rst.getString(1);
+                        objectBuilder.add("id", id);
+                        arrayBuilder.add(objectBuilder.build());
+                    }
+                    response.add("data", arrayBuilder.build());
+                    response.add("message", "Done");
+                    response.add("status", 200);
+                    writer.print(response.build());
+                    break;
 
-     } catch (SQLException e) {
-      e.printStackTrace();
-     }finally {
-         try {
-             connection.close();
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-     }
+                case "LOADITEMIDS":
+                    rst = connection.prepareStatement("SELECT code FROM item").executeQuery();
+                    while (rst.next()) {
+                        String code = rst.getString(1);
+                        objectBuilder.add("code", code);
+                        arrayBuilder.add(objectBuilder.build());
+                    }
+                    response.add("data", arrayBuilder.build());
+                    response.add("message", "Done");
+                    response.add("status", 200);
+                    writer.print(response.build());
+                    break;
+
+                case "":
+
+            }
+
+        } catch (SQLException e) {
+            response.add("data", e.getLocalizedMessage());
+            response.add("message", "error");
+            response.add("status", 400);
+            writer.print(response.build());
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 }
