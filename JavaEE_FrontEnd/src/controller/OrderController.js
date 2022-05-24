@@ -293,8 +293,53 @@ function discountCal() {
 
 
 function purchaseOrder() {
+    var obj = {
+        order: {
+            orderId:$("#OID").val(),
+            customer: selectedCustomerId,
+            orderDate: $("#iDate").val(),
+            discount: parseInt($("#discount").val()),
+            total: $("#lblFullTotal").text().split(" ")[0],
+            subTotal: $("#lblSubTotal").text().split(" ")[0]
+        },
+        orderDetail:[]
+    }
 
-    let orderId = $("#oId").val();
+    for (let i = 0; i < $('#OrderTB tr').length; i++) {
+
+        tblItemId = $('#OrderTB').children().eq(i).children().eq(0).text();
+        tblItemName = $('#OrderTB').children().eq(i).children().eq(1).text();
+        tblItemPrice = $('#OrderTB').children().eq(i).children().eq(2).text();
+        tblItemQty = $('#OrderTB').children().eq(i).children().eq(3).text();
+        tblItemTotal = $('#OrderTB').children().eq(i).children().eq(4).text();
+
+        var details = {
+            itemCode:tblItemId,
+            itemName:tblItemName,
+            itemPrice:tblItemPrice,
+            itemQty:tblItemQty,
+            itemTotal:tblItemTotal
+        }
+        obj.orderDetail.push(details);
+
+    }
+    console.log(JSON.stringify(obj));
+
+    $.ajax({
+        url: "http://localhost:8080/JavaEE_BackEnd/order",
+        method: "POST",
+        data: JSON.stringify(obj),
+        success: function (resp) {
+            if (resp.status==200){
+                generateOrderId();
+                clearInputItems();
+            }else {
+                alert(resp.data);
+            }
+        }
+    });
+
+   /* let orderId = $("#oId").val();
     let customer = selectedCustomerId;
     let orderDate = $("#iDate").val();
     let discount = parseInt($("#discount").val());
@@ -314,6 +359,6 @@ function purchaseOrder() {
 
         var orderDetailObj = new OrderDetails(orderId, tblItemId, tblItemName, tblItemPrice, tblItemQty, tblItemTotal);
         orderDetailsDB.push(orderDetailObj);
-    }
+    }*/
 
 }
