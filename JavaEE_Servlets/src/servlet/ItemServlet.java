@@ -218,14 +218,14 @@ public class ItemServlet extends HttpServlet {
         String itemCode = req.getParameter("itemCode");
         JsonObjectBuilder dataMsgBuilder = Json.createObjectBuilder();
         PrintWriter writer = resp.getWriter();
-        Connection connection = null;
+//        Connection connection = null;
 
         try {
-            connection = ds.getConnection();
+           /* connection = ds.getConnection();
             PreparedStatement pstm = connection.prepareStatement("DELETE FROM item WHERE code=?");
-            pstm.setObject(1, itemCode);
+            pstm.setObject(1, itemCode);*/
 
-            if (pstm.executeUpdate() > 0) {
+            if (itemBO.deleteItem(itemCode)) {
                 resp.setStatus(HttpServletResponse.SC_OK); //200
                 dataMsgBuilder.add("data", "");
                 dataMsgBuilder.add("massage", "Item Deleted");
@@ -240,13 +240,13 @@ public class ItemServlet extends HttpServlet {
             writer.print(dataMsgBuilder.build());
             resp.setStatus(HttpServletResponse.SC_OK); //200
             e.printStackTrace();
-        } finally {
+        } /*finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
+*/
     }
 }
