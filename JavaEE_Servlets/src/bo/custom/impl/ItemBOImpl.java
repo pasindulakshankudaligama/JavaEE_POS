@@ -25,8 +25,8 @@ public class ItemBOImpl implements ItemBO {
     }
 
     @Override
-    public JsonArrayBuilder searchItem(String id) {
-        return null;
+    public JsonArrayBuilder searchItem(String id) throws SQLException {
+        return itemDAO.search(id);
     }
 
     @Override

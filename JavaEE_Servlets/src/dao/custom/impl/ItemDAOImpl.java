@@ -7,6 +7,7 @@ import servlet.ItemServlet;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -61,8 +62,26 @@ public class ItemDAOImpl implements ItemDAO {
     }
 
     @Override
-    public JsonArrayBuilder search(String id) {
-        return null;
+    public JsonArrayBuilder search(String id) throws SQLException {
+        Connection connection = ItemServlet.ds.getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT * FROM item WHERE code LIKE ?");
+        pstm.setObject(1, "%" + id + "%");
+        ResultSet resultSet = pstm.executeQuery();
+
+        while (resultSet.next()) {
+            String itemCodes = resultSet.getString(1);
+            String itemDescriptions = resultSet.getString(2);
+            int itemQtyOnHands = resultSet.getInt(3);
+            int itemUnitPrices = resultSet.getInt(4);
+
+            objectBuilder.add("code", itemCodes);
+            objectBuilder.add("description", itemDescriptions);
+            objectBuilder.add("qtyOnHand", itemQtyOnHands);
+            objectBuilder.add("unitPrice", itemUnitPrices);
+            arrayBuilder.add(objectBuilder.build());
+        }
+        connection.close();
+        return arrayBuilder;
     }
 
     @Override

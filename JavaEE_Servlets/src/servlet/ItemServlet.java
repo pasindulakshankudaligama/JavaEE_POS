@@ -74,15 +74,15 @@ public class ItemServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+//        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+//        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
         JsonObjectBuilder response = Json.createObjectBuilder();
         PrintWriter writer = resp.getWriter();
-        Connection connection = null;
+//        Connection connection = null;
 
         try {
             String option = req.getParameter("option");
-            connection = ds.getConnection();
+//            connection = ds.getConnection();
 
             switch (option) {
                 case "GETALL":
@@ -129,8 +129,8 @@ public class ItemServlet extends HttpServlet {
                     break;
 
                 case "SEARCH":
-                    String code = req.getParameter("code");
-                    PreparedStatement pstm = connection.prepareStatement("SELECT * FROM item WHERE code LIKE ?");
+                    String id = req.getParameter("code");
+                  /*  PreparedStatement pstm = connection.prepareStatement("SELECT * FROM item WHERE code LIKE ?");
                     pstm.setObject(1, "%" + code + "%");
                     ResultSet resultSet = pstm.executeQuery();
 
@@ -147,23 +147,23 @@ public class ItemServlet extends HttpServlet {
                         objectBuilder.add("qtyOnHand", itemQtyOnHands);
                         objectBuilder.add("unitPrice", itemUnitPrices);
                         arrayBuilder.add(objectBuilder.build());
-                    }
-                    response.add("data", arrayBuilder.build());
+                    }*/
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    response.add("data", itemBO.searchItem(id));
                     response.add("massage", "Done");
                     response.add("status", "200");
-
                     writer.print(response.build());
                     break;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
+        } /*finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
     }
 

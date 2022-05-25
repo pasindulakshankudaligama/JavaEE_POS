@@ -12,7 +12,7 @@ public interface ItemBO extends SuperBO {
 
     JsonObjectBuilder generateItemID() throws SQLException;
 
-    JsonArrayBuilder searchItem(String id);
+    JsonArrayBuilder searchItem(String id) throws SQLException;
 
     boolean addItem(ItemDTO itemDTO) throws SQLException;
 
