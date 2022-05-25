@@ -5,6 +5,7 @@ import dto.CustomerDTO;
 
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import java.sql.SQLException;
 
 public interface CustomerBO extends SuperBO {
     JsonArrayBuilder getAllCustomer();
@@ -13,7 +14,7 @@ public interface CustomerBO extends SuperBO {
 
     JsonArrayBuilder searchCustomer(String id);
 
-    boolean addCustomer(CustomerDTO customerDTO);
+    boolean addCustomer(CustomerDTO customerDTO) throws SQLException;
 
     boolean deleteCustomer(String id);
 

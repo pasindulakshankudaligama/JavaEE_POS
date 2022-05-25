@@ -1,5 +1,9 @@
 package servlet;
 
+import bo.BOFactory;
+import bo.custom.impl.CustomerBOImpl;
+import dto.CustomerDTO;
+
 import javax.annotation.Resource;
 import javax.json.*;
 import javax.servlet.ServletException;
@@ -19,7 +23,9 @@ import java.sql.SQLException;
 public class CustomerServlet extends HttpServlet {
 
     @Resource(name = "java:comp/env/jdbc/pool")
-    DataSource ds;
+    public static DataSource ds;
+
+    CustomerBOImpl customerBO = (CustomerBOImpl) BOFactory.getBoFactory().getBO(BOFactory.BoTypes.CUSTOMER);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -28,19 +34,12 @@ public class CustomerServlet extends HttpServlet {
         String name = req.getParameter("name");
         String address = req.getParameter("address");
         String salary = req.getParameter("salary");
-
+        CustomerDTO customerDTO = new CustomerDTO(id, name, address, Integer.parseInt(salary));
         PrintWriter writer = resp.getWriter();
-        Connection connection = null;
+//        Connection connection = null;
 
         try {
-            connection = ds.getConnection();
-            PreparedStatement pstm = connection.prepareStatement("INSERT INTO customer VALUES(?,?,?,?)");
-            pstm.setObject(1, id);
-            pstm.setObject(2, name);
-            pstm.setObject(3, address);
-            pstm.setObject(4, salary);
-
-            if (pstm.executeUpdate() > 0) {
+            if (customerBO.addCustomer(customerDTO)) {
                 JsonObjectBuilder response = Json.createObjectBuilder();
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 response.add("status", 200);
@@ -57,13 +56,13 @@ public class CustomerServlet extends HttpServlet {
             response.add("data", e.getLocalizedMessage());
             writer.print(response.build());
             e.printStackTrace();
-        } finally {
+        } /*finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
     }
 
@@ -103,18 +102,18 @@ public class CustomerServlet extends HttpServlet {
 
                 case "GENID":
                     ResultSet rst2 = connection.prepareStatement("SELECT id FROM customer ORDER BY id DESC LIMIT 1").executeQuery();
-                    if(rst2.next()){
+                    if (rst2.next()) {
                         int temp = Integer.parseInt(rst2.getString(1).split("-")[1]);
-                        temp+=1;
-                        if (temp<10){
+                        temp += 1;
+                        if (temp < 10) {
                             objectBuilder.add("id", "C00-00" + temp);
                         } else if (temp < 100) {
                             objectBuilder.add("id", "C00-0" + temp);
                         } else if (temp < 1000) {
                             objectBuilder.add("id", "C00-" + temp);
                         }
-                    }else{
-                      objectBuilder.add("id", "C00-000");
+                    } else {
+                        objectBuilder.add("id", "C00-000");
                     }
                     response.add("data", objectBuilder.build());
                     response.add("message", "Done");
@@ -125,7 +124,7 @@ public class CustomerServlet extends HttpServlet {
                 case "SEARCH":
                     String id = req.getParameter("id");
                     PreparedStatement pstm = connection.prepareStatement("SELECT * FROM customer WHERE id LIKE ?");
-                    pstm.setObject(1, "%"+id+"%");
+                    pstm.setObject(1, "%" + id + "%");
                     ResultSet resultSet = pstm.executeQuery();
 
                     while (resultSet.next()) {

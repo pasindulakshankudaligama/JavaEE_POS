@@ -8,6 +8,7 @@ import dto.CustomerDTO;
 
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import java.sql.SQLException;
 
 public class CustomerBOImpl implements CustomerBO {
     CustomerDAOImpl customerDAO = (CustomerDAOImpl) DAOFactory.getDAOFactory().getDAO(DAOFactory.DAOTypes.CUSTOMER);
@@ -27,7 +28,7 @@ public class CustomerBOImpl implements CustomerBO {
     }
 
     @Override
-    public boolean addCustomer(CustomerDTO customerDTO) {
+    public boolean addCustomer(CustomerDTO customerDTO) throws SQLException {
         Customer customer = new Customer(customerDTO.getId(), customerDTO.getName(), customerDTO.getAddress(), customerDTO.getSalary());
         return customerDAO.add(customer);
     }

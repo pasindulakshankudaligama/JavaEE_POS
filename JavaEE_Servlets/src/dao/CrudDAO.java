@@ -2,6 +2,7 @@ package dao;
 
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import java.sql.SQLException;
 
 public interface CrudDAO<S, Id> extends SuperDAO {
 
@@ -11,7 +12,7 @@ public interface CrudDAO<S, Id> extends SuperDAO {
 
     JsonArrayBuilder search(String id);
 
-    boolean add(S s);
+    boolean add(S s) throws SQLException;
 
     boolean delete(String id);
 
