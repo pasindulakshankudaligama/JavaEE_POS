@@ -80,7 +80,7 @@ public class CustomerServlet extends HttpServlet {
 
             switch (option) {
                 case "GETALL":
-                    ResultSet rst = connection.prepareStatement("SELECT * FROM customer").executeQuery();
+                   /* ResultSet rst = connection.prepareStatement("SELECT * FROM customer").executeQuery();
                     while (rst.next()) {
                         String id = rst.getString(1);
                         String name = rst.getString(2);
@@ -92,11 +92,10 @@ public class CustomerServlet extends HttpServlet {
                         objectBuilder.add("address", address);
                         objectBuilder.add("salary", salary);
                         arrayBuilder.add(objectBuilder.build());
-                    }
-
+                    }*/
+                    response.add("data", customerBO.getAllCustomer());
                     response.add("status", 200);
                     response.add("message", "Done");
-                    response.add("data", arrayBuilder.build());
                     writer.print(response.build());
                     break;
 

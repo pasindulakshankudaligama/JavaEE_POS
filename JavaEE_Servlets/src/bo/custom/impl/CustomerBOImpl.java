@@ -13,8 +13,8 @@ import java.sql.SQLException;
 public class CustomerBOImpl implements CustomerBO {
     CustomerDAOImpl customerDAO = (CustomerDAOImpl) DAOFactory.getDAOFactory().getDAO(DAOFactory.DAOTypes.CUSTOMER);
     @Override
-    public JsonArrayBuilder getAllCustomer() {
-        return null;
+    public JsonArrayBuilder getAllCustomer() throws SQLException {
+        return customerDAO.getAll();
     }
 
     @Override

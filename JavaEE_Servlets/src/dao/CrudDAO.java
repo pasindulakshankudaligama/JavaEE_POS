@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public interface CrudDAO<S, Id> extends SuperDAO {
 
-    JsonArrayBuilder getAll();
+    JsonArrayBuilder getAll() throws SQLException;
 
     JsonObjectBuilder generateID();
 

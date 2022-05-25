@@ -2,19 +2,41 @@ package dao.custom.impl;
 
 import Entity.Customer;
 import dao.custom.CustomerDAO;
+import servlet.CustomerServlet;
 
+import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static servlet.CustomerServlet.ds;
 
 public class CustomerDAOImpl implements CustomerDAO {
+
+    JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+    JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+
     @Override
-    public JsonArrayBuilder getAll() {
-        return null;
+    public JsonArrayBuilder getAll() throws SQLException {
+        Connection connection = CustomerServlet.ds.getConnection();
+        ResultSet rst = connection.prepareStatement("SELECT * FROM customer").executeQuery();
+        while (rst.next()) {
+            String id = rst.getString(1);
+            String name = rst.getString(2);
+            String address = rst.getString(3);
+            int salary = rst.getInt(4);
+
+            objectBuilder.add("id", id);
+            objectBuilder.add("name", name);
+            objectBuilder.add("address", address);
+            objectBuilder.add("salary", salary);
+            arrayBuilder.add(objectBuilder.build());
+        }
+        connection.close();
+        return arrayBuilder;
     }
 
     @Override
@@ -29,7 +51,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean add(Customer customer) throws SQLException {
-        Connection connection = ds.getConnection();
+        Connection connection = CustomerServlet.ds.getConnection();
         PreparedStatement pstm = connection.prepareStatement("INSERT INTO customer VALUES(?,?,?,?)");
         pstm.setObject(1, customer.getId());
         pstm.setObject(2, customer.getName());
@@ -42,7 +64,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean delete(String id) throws SQLException {
-        Connection connection = ds.getConnection();
+        Connection connection = CustomerServlet.ds.getConnection();
         PreparedStatement pstm = connection.prepareStatement("DELETE FROM customer WHERE id=?");
         pstm.setObject(1, id);
         boolean b = pstm.executeUpdate() > 0;
@@ -52,7 +74,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean update(Customer customer) throws SQLException {
-        Connection connection = ds.getConnection();
+        Connection connection = CustomerServlet.ds.getConnection();
         PreparedStatement pstm = connection.prepareStatement("UPDATE customer SET name=?, address=?, salary=? WHERE id=?");
         pstm.setObject(1, customer.getName());
         pstm.setObject(2, customer.getAddress());
