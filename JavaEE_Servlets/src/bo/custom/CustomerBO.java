@@ -12,7 +12,7 @@ public interface CustomerBO extends SuperBO {
 
     JsonObjectBuilder generateCustomerID() throws SQLException;
 
-    JsonArrayBuilder searchCustomer(String id);
+    JsonArrayBuilder searchCustomer(String id) throws SQLException;
 
     boolean addCustomer(CustomerDTO customerDTO) throws SQLException;
 

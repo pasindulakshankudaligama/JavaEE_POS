@@ -69,14 +69,14 @@ public class CustomerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder(); // json array
-        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+//        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder(); // json array
+//        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
         JsonObjectBuilder response = Json.createObjectBuilder();
         PrintWriter writer = resp.getWriter();
-        Connection connection = null;
+//        Connection connection = null;
         try {
             String option = req.getParameter("option");
-            connection = ds.getConnection();
+//            connection = ds.getConnection();
 
             switch (option) {
                 case "GETALL":
@@ -122,7 +122,8 @@ public class CustomerServlet extends HttpServlet {
 
                 case "SEARCH":
                     String id = req.getParameter("id");
-                    PreparedStatement pstm = connection.prepareStatement("SELECT * FROM customer WHERE id LIKE ?");
+                    resp.setStatus(HttpServletResponse.SC_OK);//201
+                    /*PreparedStatement pstm = connection.prepareStatement("SELECT * FROM customer WHERE id LIKE ?");
                     pstm.setObject(1, "%" + id + "%");
                     ResultSet resultSet = pstm.executeQuery();
 
@@ -132,7 +133,7 @@ public class CustomerServlet extends HttpServlet {
                         String cusAddressS = resultSet.getString(3);
                         int cusSalaryS = resultSet.getInt(4);
 
-                        resp.setStatus(HttpServletResponse.SC_OK);//201
+
 
                         objectBuilder.add("id", cusIDS);
                         objectBuilder.add("name", cusNameS);
@@ -142,8 +143,8 @@ public class CustomerServlet extends HttpServlet {
                         arrayBuilder.add(objectBuilder.build());
 
                         System.out.println(cusIDS + " " + cusNameS + " " + cusAddressS + " " + cusSalaryS);
-                    }
-                    response.add("data", arrayBuilder.build());
+                    }*/
+                    response.add("data", customerBO.searchCustomer(id));
                     response.add("massage", "Done");
                     response.add("status", "200");
 
@@ -154,14 +155,13 @@ public class CustomerServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
+        } /*finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-
+        }*/
     }
 
     @Override

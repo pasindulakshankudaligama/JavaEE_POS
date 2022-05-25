@@ -23,8 +23,8 @@ public class CustomerBOImpl implements CustomerBO {
     }
 
     @Override
-    public JsonArrayBuilder searchCustomer(String id) {
-        return null;
+    public JsonArrayBuilder searchCustomer(String id) throws SQLException {
+        return customerDAO.search(id);
     }
 
     @Override

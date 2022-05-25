@@ -12,8 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static servlet.CustomerServlet.ds;
-
 public class CustomerDAOImpl implements CustomerDAO {
 
     JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -61,8 +59,29 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public JsonArrayBuilder search(String id) {
-        return null;
+    public JsonArrayBuilder search(String id) throws SQLException {
+        Connection connection = CustomerServlet.ds.getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT * FROM customer WHERE id LIKE ?");
+        pstm.setObject(1, "%" + id + "%");
+        ResultSet resultSet = pstm.executeQuery();
+
+        while (resultSet.next()) {
+            String cusIDS = resultSet.getString(1);
+            String cusNameS = resultSet.getString(2);
+            String cusAddressS = resultSet.getString(3);
+            int cusSalaryS = resultSet.getInt(4);
+
+            objectBuilder.add("id", cusIDS);
+            objectBuilder.add("name", cusNameS);
+            objectBuilder.add("address", cusAddressS);
+            objectBuilder.add("salary", cusSalaryS);
+
+            arrayBuilder.add(objectBuilder.build());
+
+            System.out.println(cusIDS + " " + cusNameS + " " + cusAddressS + " " + cusSalaryS);
+        }
+        connection.close();
+        return arrayBuilder;
     }
 
     @Override
