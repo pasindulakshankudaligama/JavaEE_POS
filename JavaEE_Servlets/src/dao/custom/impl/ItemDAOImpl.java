@@ -55,7 +55,15 @@ public class ItemDAOImpl implements ItemDAO {
     }
 
     @Override
-    public boolean update(Item item) {
-        return false;
+    public boolean update(Item item) throws SQLException {
+        Connection connection = ItemServlet.ds.getConnection();
+        PreparedStatement pstm = connection.prepareStatement("UPDATE item SET description=?, qtyOnHand=?, unitPrice=? WHERE code=?");
+        pstm.setObject(1, item.getDescription());
+        pstm.setObject(2, item.getQtyOnHand());
+        pstm.setObject(3, item.getUnitPrice());
+        pstm.setObject(4, item.getCode());
+        boolean b = pstm.executeUpdate() > 0;
+        connection.close();
+        return b;
     }
 }

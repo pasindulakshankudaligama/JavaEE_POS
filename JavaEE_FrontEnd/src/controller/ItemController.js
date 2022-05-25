@@ -1,7 +1,10 @@
 //crud
 
-generateItemId();
-loadAllItems();
+
+$("#item-click").click(function(){
+    generateItemId();
+    loadAllItems();
+});
 
 $("#btnItemSave").click(function () {
     $.ajax({
@@ -59,8 +62,8 @@ $("#btnItemUpdate").click(function () {
     var itemOb = {
         code: $("#txtItemCode").val(),
         description: $("#txtItemName").val(),
-        qtyOnHand: $("#txtItemQTY").val(),
-        unitPrice: $("#txtUnitPrice").val()
+        qtyOnHand: parseInt($("#txtItemQTY").val()),
+        unitPrice: parseInt($("#txtUnitPrice").val())
     }
     $.ajax({
         url: "http://localhost:8080/JavaEE_BackEnd/item",

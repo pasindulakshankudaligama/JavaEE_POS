@@ -90,8 +90,8 @@ public class ItemServlet extends HttpServlet {
                     while (rst.next()) {
                         String code = rst.getString(1);
                         String description = rst.getString(2);
-                        int qtyOnHand = rst.getInt(3);
-                        double unitPrice = rst.getDouble(4);
+                        String qtyOnHand = rst.getString(3);
+                        String unitPrice = rst.getString(4);
 
                         objectBuilder.add("code", code);
                         objectBuilder.add("description", description);
@@ -109,6 +109,7 @@ public class ItemServlet extends HttpServlet {
                     ResultSet rst2 = connection.prepareStatement("SELECT code FROM item ORDER BY code DESC LIMIT 1").executeQuery();
                     if (rst2.next()) {
                         int temp = Integer.parseInt(rst2.getString(1).split("-")[1]);
+                        System.out.println(temp);
                         temp += 1;
                         if (temp < 10) {
                             objectBuilder.add("code", "I00-00" + temp);
@@ -116,15 +117,17 @@ public class ItemServlet extends HttpServlet {
                             objectBuilder.add("code", "I00-0" + temp);
                         } else if (temp < 1000) {
                             objectBuilder.add("code", "I00-" + temp);
-                        } else {
-                            objectBuilder.add("code", "I00-000");
                         }
-                        response.add("data", objectBuilder.build());
-                        response.add("message", "Done");
-                        response.add("status", 200);
-                        writer.print(response.build());
-                        break;
+
+                    } else {
+                        objectBuilder.add("code", "I00-000");
                     }
+                    response.add("data", objectBuilder.build());
+                    response.add("message", "Done");
+                    response.add("status", 200);
+                    writer.print(response.build());
+                    break;
+
                 case "SEARCH":
                     String code = req.getParameter("code");
                     PreparedStatement pstm = connection.prepareStatement("SELECT * FROM item WHERE code LIKE ?");
@@ -172,20 +175,21 @@ public class ItemServlet extends HttpServlet {
 
         String itemCodeUpdate = jsonObject.getString("code");
         String itemDesUpdate = jsonObject.getString("description");
-        String itemQTYUpdate = jsonObject.getString("qtyOnHand");
-        String itemUnitPriceUpdate = jsonObject.getString("unitPrice");
+        int itemQTYUpdate = jsonObject.getInt("qtyOnHand");
+        int itemUnitPriceUpdate = jsonObject.getInt("unitPrice");
+        ItemDTO itemDTO = new ItemDTO(itemCodeUpdate, itemDesUpdate, itemQTYUpdate, itemUnitPriceUpdate);
         PrintWriter writer = resp.getWriter();
-        Connection connection = null;
+//        Connection connection = null;
 
         try {
-            connection = ds.getConnection();
+           /* connection = ds.getConnection();
             PreparedStatement pstm = connection.prepareStatement("UPDATE item SET description=?, qtyOnHand=?, unitPrice=? WHERE code=?");
             pstm.setObject(1, itemDesUpdate);
             pstm.setObject(2, itemQTYUpdate);
             pstm.setObject(3, itemUnitPriceUpdate);
-            pstm.setObject(4, itemCodeUpdate);
+            pstm.setObject(4, itemCodeUpdate);*/
 
-            if (pstm.executeUpdate() > 0) {
+            if (itemBO.updateItem(itemDTO)) {
                 JsonObjectBuilder response = Json.createObjectBuilder();
                 resp.setStatus(HttpServletResponse.SC_CREATED);//201
                 response.add("status", 200);
@@ -202,13 +206,13 @@ public class ItemServlet extends HttpServlet {
             writer.print(response.build());
             resp.setStatus(HttpServletResponse.SC_OK); //200
             e.printStackTrace();
-        } finally {
+        } /*finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
     }
 

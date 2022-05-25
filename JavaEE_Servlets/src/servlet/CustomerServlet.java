@@ -175,7 +175,7 @@ public class CustomerServlet extends HttpServlet {
         String cusIDUpdate = jsonObject.getString("id");
         String cusNameUpdate = jsonObject.getString("name");
         String cusAddressUpdate = jsonObject.getString("address");
-        int cusSalaryUpdate = Integer.parseInt(jsonObject.getString("salary"));
+        int cusSalaryUpdate = jsonObject.getInt("salary");
         CustomerDTO customerDTO = new CustomerDTO(cusIDUpdate, cusNameUpdate, cusAddressUpdate, cusSalaryUpdate);
         PrintWriter writer = resp.getWriter();
 
