@@ -2,11 +2,20 @@ package dao.custom.impl;
 
 import Entity.Item;
 import dao.custom.ItemDAO;
+import servlet.ItemServlet;
 
+import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class ItemDAOImpl implements ItemDAO {
+
+    JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+    JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+
     @Override
     public JsonArrayBuilder getAll() {
         return null;
@@ -23,8 +32,16 @@ public class ItemDAOImpl implements ItemDAO {
     }
 
     @Override
-    public boolean add(Item item) {
-        return false;
+    public boolean add(Item item) throws SQLException {
+        Connection connection = ItemServlet.ds.getConnection();
+        PreparedStatement pstm = connection.prepareStatement("INSERT INTO item VALUES(?,?,?,?)");
+        pstm.setObject(1, item.getCode());
+        pstm.setObject(2, item.getDescription());
+        pstm.setObject(3, item.getQtyOnHand());
+        pstm.setObject(4, item.getUnitPrice());
+        boolean b = pstm.executeUpdate() > 0;
+        connection.close();
+        return b;
     }
 
     @Override

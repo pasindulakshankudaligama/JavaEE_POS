@@ -1,5 +1,9 @@
 package servlet;
 
+import bo.BOFactory;
+import bo.custom.impl.ItemBOImpl;
+import dto.ItemDTO;
+
 import javax.annotation.Resource;
 import javax.json.*;
 import javax.servlet.ServletException;
@@ -19,37 +23,37 @@ import java.sql.SQLException;
 public class ItemServlet extends HttpServlet {
 
     @Resource(name = "java:comp/env/jdbc/pool")
-    DataSource ds;
+    public static DataSource ds;
+
+    ItemBOImpl itemBO = (ItemBOImpl) BOFactory.getBoFactory().getBO(BOFactory.BoTypes.ITEM);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         String code = req.getParameter("code");
         String description = req.getParameter("description");
-        String qtyOnHand = req.getParameter("qtyOnHand");
-        String unitPrice = req.getParameter("unitPrice");
-
+        int qtyOnHand = Integer.parseInt(req.getParameter("qtyOnHand"));
+        int unitPrice = Integer.parseInt(req.getParameter("unitPrice"));
+        ItemDTO itemDTO = new ItemDTO(code, description, qtyOnHand, unitPrice);
         PrintWriter writer = resp.getWriter();
-        Connection connection = null;
+//        Connection connection = null;
 
         try {
-            connection = ds.getConnection();
+            /*connection = ds.getConnection();
             PreparedStatement pstm = connection.prepareStatement("INSERT INTO item VALUES(?,?,?,?)");
             pstm.setObject(1, code);
             pstm.setObject(2, description);
             pstm.setObject(3, qtyOnHand);
             pstm.setObject(4, unitPrice);
-
-            if (pstm.executeUpdate() > 0) {
+*/
+            if (itemBO.addItem(itemDTO)) {
                 JsonObjectBuilder response = Json.createObjectBuilder();
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 response.add("status", 200);
                 response.add("message", "Successfully added");
                 response.add("data", "");
                 writer.print(response.build());
-
             }
-
         } catch (SQLException e) {
             JsonObjectBuilder response = Json.createObjectBuilder();
             resp.setStatus(HttpServletResponse.SC_OK);
@@ -58,13 +62,13 @@ public class ItemServlet extends HttpServlet {
             response.add("data", e.getLocalizedMessage());
             writer.print(response.build());
             e.printStackTrace();
-        } finally {
+        } /*finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     @Override
@@ -176,10 +180,10 @@ public class ItemServlet extends HttpServlet {
         try {
             connection = ds.getConnection();
             PreparedStatement pstm = connection.prepareStatement("UPDATE item SET description=?, qtyOnHand=?, unitPrice=? WHERE code=?");
-            pstm.setObject(1,itemDesUpdate);
-            pstm.setObject(2,itemQTYUpdate);
-            pstm.setObject(3,itemUnitPriceUpdate);
-            pstm.setObject(4,itemCodeUpdate);
+            pstm.setObject(1, itemDesUpdate);
+            pstm.setObject(2, itemQTYUpdate);
+            pstm.setObject(3, itemUnitPriceUpdate);
+            pstm.setObject(4, itemCodeUpdate);
 
             if (pstm.executeUpdate() > 0) {
                 JsonObjectBuilder response = Json.createObjectBuilder();
@@ -198,7 +202,7 @@ public class ItemServlet extends HttpServlet {
             writer.print(response.build());
             resp.setStatus(HttpServletResponse.SC_OK); //200
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
@@ -219,7 +223,7 @@ public class ItemServlet extends HttpServlet {
         try {
             connection = ds.getConnection();
             PreparedStatement pstm = connection.prepareStatement("DELETE FROM item WHERE code=?");
-            pstm.setObject(1,itemCode);
+            pstm.setObject(1, itemCode);
 
             if (pstm.executeUpdate() > 0) {
                 resp.setStatus(HttpServletResponse.SC_OK); //200
@@ -236,13 +240,12 @@ public class ItemServlet extends HttpServlet {
             writer.print(dataMsgBuilder.build());
             resp.setStatus(HttpServletResponse.SC_OK); //200
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            ;
         }
 
     }

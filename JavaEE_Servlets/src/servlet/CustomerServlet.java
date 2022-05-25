@@ -5,7 +5,10 @@ import bo.custom.impl.CustomerBOImpl;
 import dto.CustomerDTO;
 
 import javax.annotation.Resource;
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,9 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @WebServlet(urlPatterns = "/customer")
@@ -33,8 +33,8 @@ public class CustomerServlet extends HttpServlet {
         String id = req.getParameter("id");
         String name = req.getParameter("name");
         String address = req.getParameter("address");
-        String salary = req.getParameter("salary");
-        CustomerDTO customerDTO = new CustomerDTO(id, name, address, Integer.parseInt(salary));
+        int salary = Integer.parseInt(req.getParameter("salary"));
+        CustomerDTO customerDTO = new CustomerDTO(id, name, address, salary);
         PrintWriter writer = resp.getWriter();
 //        Connection connection = null;
 
@@ -175,8 +175,8 @@ public class CustomerServlet extends HttpServlet {
         String cusIDUpdate = jsonObject.getString("id");
         String cusNameUpdate = jsonObject.getString("name");
         String cusAddressUpdate = jsonObject.getString("address");
-        String cusSalaryUpdate = jsonObject.getString("salary");
-        CustomerDTO customerDTO = new CustomerDTO(cusIDUpdate, cusNameUpdate, cusAddressUpdate, Integer.parseInt(cusSalaryUpdate));
+        int cusSalaryUpdate = Integer.parseInt(jsonObject.getString("salary"));
+        CustomerDTO customerDTO = new CustomerDTO(cusIDUpdate, cusNameUpdate, cusAddressUpdate, cusSalaryUpdate);
         PrintWriter writer = resp.getWriter();
 
 //        Connection connection = null;

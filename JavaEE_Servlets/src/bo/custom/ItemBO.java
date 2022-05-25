@@ -5,6 +5,7 @@ import dto.ItemDTO;
 
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import java.sql.SQLException;
 
 public interface ItemBO extends SuperBO {
     JsonArrayBuilder getAllItems();
@@ -13,7 +14,7 @@ public interface ItemBO extends SuperBO {
 
     JsonArrayBuilder searchItem(String id);
 
-    boolean addItem(ItemDTO itemDTO);
+    boolean addItem(ItemDTO itemDTO) throws SQLException;
 
     boolean deleteItem(String id);
 
