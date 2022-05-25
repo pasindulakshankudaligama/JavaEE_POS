@@ -8,7 +8,7 @@ public interface CrudDAO<S, Id> extends SuperDAO {
 
     JsonArrayBuilder getAll() throws SQLException;
 
-    JsonObjectBuilder generateID();
+    JsonObjectBuilder generateID() throws SQLException;
 
     JsonArrayBuilder search(String id);
 

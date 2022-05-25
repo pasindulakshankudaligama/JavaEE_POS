@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public interface CustomerBO extends SuperBO {
     JsonArrayBuilder getAllCustomer() throws SQLException;
 
-    JsonObjectBuilder generateCustomerID();
+    JsonObjectBuilder generateCustomerID() throws SQLException;
 
     JsonArrayBuilder searchCustomer(String id);
 

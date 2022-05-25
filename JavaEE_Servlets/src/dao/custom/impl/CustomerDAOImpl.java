@@ -40,8 +40,24 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public JsonObjectBuilder generateID() {
-        return null;
+    public JsonObjectBuilder generateID() throws SQLException {
+        Connection connection = CustomerServlet.ds.getConnection();
+        ResultSet rst2 = connection.prepareStatement("SELECT id FROM customer ORDER BY id DESC LIMIT 1").executeQuery();
+        if (rst2.next()) {
+            int temp = Integer.parseInt(rst2.getString(1).split("-")[1]);
+            temp += 1;
+            if (temp < 10) {
+                objectBuilder.add("id", "C00-00" + temp);
+            } else if (temp < 100) {
+                objectBuilder.add("id", "C00-0" + temp);
+            } else if (temp < 1000) {
+                objectBuilder.add("id", "C00-" + temp);
+            }
+        } else {
+            objectBuilder.add("id", "C00-000");
+        }
+        connection.close();
+        return objectBuilder;
     }
 
     @Override

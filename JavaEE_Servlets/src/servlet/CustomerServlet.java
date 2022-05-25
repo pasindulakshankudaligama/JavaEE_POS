@@ -100,7 +100,7 @@ public class CustomerServlet extends HttpServlet {
                     break;
 
                 case "GENID":
-                    ResultSet rst2 = connection.prepareStatement("SELECT id FROM customer ORDER BY id DESC LIMIT 1").executeQuery();
+                   /* ResultSet rst2 = connection.prepareStatement("SELECT id FROM customer ORDER BY id DESC LIMIT 1").executeQuery();
                     if (rst2.next()) {
                         int temp = Integer.parseInt(rst2.getString(1).split("-")[1]);
                         temp += 1;
@@ -113,8 +113,8 @@ public class CustomerServlet extends HttpServlet {
                         }
                     } else {
                         objectBuilder.add("id", "C00-000");
-                    }
-                    response.add("data", objectBuilder.build());
+                    }*/
+                    response.add("data", customerBO.generateCustomerID());
                     response.add("message", "Done");
                     response.add("status", 200);
                     writer.print(response.build());

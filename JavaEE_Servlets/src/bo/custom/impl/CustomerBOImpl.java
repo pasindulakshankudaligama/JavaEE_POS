@@ -18,8 +18,8 @@ public class CustomerBOImpl implements CustomerBO {
     }
 
     @Override
-    public JsonObjectBuilder generateCustomerID() {
-        return null;
+    public JsonObjectBuilder generateCustomerID() throws SQLException {
+        return customerDAO.generateID();
     }
 
     @Override
