@@ -219,13 +219,13 @@ public class CustomerServlet extends HttpServlet {
         String customerID = req.getParameter("customerID");
         JsonObjectBuilder dataMsgBuilder = Json.createObjectBuilder();
         PrintWriter writer = resp.getWriter();
-        Connection connection = null;
+//        Connection connection = null;
         try {
-            connection = ds.getConnection();
+            /*connection = ds.getConnection();
             PreparedStatement pstm = connection.prepareStatement("DELETE FROM customer WHERE id=?");
-            pstm.setObject(1, customerID);
+            pstm.setObject(1, customerID);*/
 
-            if (pstm.executeUpdate() > 0) {
+            if (customerBO.deleteCustomer(customerID)) {
                 resp.setStatus(HttpServletResponse.SC_OK); //200
                 dataMsgBuilder.add("data", "");
                 dataMsgBuilder.add("massage", "Customer Deleted");
@@ -238,12 +238,12 @@ public class CustomerServlet extends HttpServlet {
             dataMsgBuilder.add("data", e.getLocalizedMessage());
             writer.print(dataMsgBuilder.build());
             resp.setStatus(HttpServletResponse.SC_OK); //200
-        } finally {
+        } /*finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 }
