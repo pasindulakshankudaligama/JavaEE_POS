@@ -177,18 +177,19 @@ public class CustomerServlet extends HttpServlet {
         String cusNameUpdate = jsonObject.getString("name");
         String cusAddressUpdate = jsonObject.getString("address");
         String cusSalaryUpdate = jsonObject.getString("salary");
+        CustomerDTO customerDTO = new CustomerDTO(cusIDUpdate, cusNameUpdate, cusAddressUpdate, Integer.parseInt(cusSalaryUpdate));
         PrintWriter writer = resp.getWriter();
 
-        Connection connection = null;
+//        Connection connection = null;
         try {
-            connection = ds.getConnection();
+          /*  connection = ds.getConnection();
             PreparedStatement pstm = connection.prepareStatement("UPDATE customer SET name=?, address=?, salary=? WHERE id=?");
             pstm.setObject(1, cusNameUpdate);
             pstm.setObject(2, cusAddressUpdate);
             pstm.setObject(3, cusSalaryUpdate);
-            pstm.setObject(4, cusIDUpdate);
+            pstm.setObject(4, cusIDUpdate);*/
 
-            if (pstm.executeUpdate() > 0) {
+            if (customerBO.updateCustomer(customerDTO)) {
                 JsonObjectBuilder response = Json.createObjectBuilder();
                 resp.setStatus(HttpServletResponse.SC_CREATED);//201
                 response.add("status", 200);
@@ -204,13 +205,13 @@ public class CustomerServlet extends HttpServlet {
             response.add("data", e.getLocalizedMessage());
             writer.print(response.build());
             resp.setStatus(HttpServletResponse.SC_OK); //200
-        } finally {
+        }/* finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     @Override

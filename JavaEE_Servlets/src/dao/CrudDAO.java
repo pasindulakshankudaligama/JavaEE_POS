@@ -16,5 +16,5 @@ public interface CrudDAO<S, Id> extends SuperDAO {
 
     boolean delete(String id) throws SQLException;
 
-    boolean update(S s);
+    boolean update(S s) throws SQLException;
 }

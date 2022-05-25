@@ -42,7 +42,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean delete(String id) throws SQLException {
-       Connection connection = ds.getConnection();
+        Connection connection = ds.getConnection();
         PreparedStatement pstm = connection.prepareStatement("DELETE FROM customer WHERE id=?");
         pstm.setObject(1, id);
         boolean b = pstm.executeUpdate() > 0;
@@ -51,7 +51,15 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public boolean update(Customer customer) {
-        return false;
+    public boolean update(Customer customer) throws SQLException {
+        Connection connection = ds.getConnection();
+        PreparedStatement pstm = connection.prepareStatement("UPDATE customer SET name=?, address=?, salary=? WHERE id=?");
+        pstm.setObject(1, customer.getName());
+        pstm.setObject(2, customer.getAddress());
+        pstm.setObject(3, customer.getSalary());
+        pstm.setObject(4, customer.getId());
+        boolean b = pstm.executeUpdate() > 0;
+        connection.close();
+        return b;
     }
 }
