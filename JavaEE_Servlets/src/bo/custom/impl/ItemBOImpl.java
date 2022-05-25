@@ -20,8 +20,8 @@ public class ItemBOImpl implements ItemBO {
     }
 
     @Override
-    public JsonObjectBuilder generateItemID() {
-        return null;
+    public JsonObjectBuilder generateItemID() throws SQLException {
+        return itemDAO.generateID();
     }
 
     @Override

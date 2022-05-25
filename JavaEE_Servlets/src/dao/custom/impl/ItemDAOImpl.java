@@ -38,8 +38,26 @@ public class ItemDAOImpl implements ItemDAO {
     }
 
     @Override
-    public JsonObjectBuilder generateID() {
-        return null;
+    public JsonObjectBuilder generateID() throws SQLException {
+        Connection connection = ItemServlet.ds.getConnection();
+        ResultSet rst2 = connection.prepareStatement("SELECT code FROM item ORDER BY code DESC LIMIT 1").executeQuery();
+        if (rst2.next()) {
+            int temp = Integer.parseInt(rst2.getString(1).split("-")[1]);
+            System.out.println(temp);
+            temp += 1;
+            if (temp < 10) {
+                objectBuilder.add("code", "I00-00" + temp);
+            } else if (temp < 100) {
+                objectBuilder.add("code", "I00-0" + temp);
+            } else if (temp < 1000) {
+                objectBuilder.add("code", "I00-" + temp);
+            }
+
+        } else {
+            objectBuilder.add("code", "I00-000");
+        }
+        connection.close();
+        return objectBuilder;
     }
 
     @Override

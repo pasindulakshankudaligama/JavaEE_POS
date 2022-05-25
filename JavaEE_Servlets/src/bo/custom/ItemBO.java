@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public interface ItemBO extends SuperBO {
     JsonArrayBuilder getAllItems() throws SQLException;
 
-    JsonObjectBuilder generateItemID();
+    JsonObjectBuilder generateItemID() throws SQLException;
 
     JsonArrayBuilder searchItem(String id);
 

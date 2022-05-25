@@ -99,14 +99,14 @@ public class ItemServlet extends HttpServlet {
                         objectBuilder.add("unitPrice", unitPrice);
                         arrayBuilder.add(objectBuilder.build());
                     }*/
-                    response.add("data", itemBO.generateItemID());
+                    response.add("data", itemBO.getAllItems());
                     response.add("status", 200);
                     response.add("message", "Done");
                     writer.print(response.build());
                     break;
 
                 case "GENID":
-                    ResultSet rst2 = connection.prepareStatement("SELECT code FROM item ORDER BY code DESC LIMIT 1").executeQuery();
+                   /* ResultSet rst2 = connection.prepareStatement("SELECT code FROM item ORDER BY code DESC LIMIT 1").executeQuery();
                     if (rst2.next()) {
                         int temp = Integer.parseInt(rst2.getString(1).split("-")[1]);
                         System.out.println(temp);
@@ -121,8 +121,8 @@ public class ItemServlet extends HttpServlet {
 
                     } else {
                         objectBuilder.add("code", "I00-000");
-                    }
-                    response.add("data", objectBuilder.build());
+                    }*/
+                    response.add("data", itemBO.generateItemID());
                     response.add("message", "Done");
                     response.add("status", 200);
                     writer.print(response.build());
