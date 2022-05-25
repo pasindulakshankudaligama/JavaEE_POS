@@ -86,7 +86,7 @@ public class ItemServlet extends HttpServlet {
 
             switch (option) {
                 case "GETALL":
-                    ResultSet rst = connection.prepareStatement("SELECT * FROM item").executeQuery();
+                    /*ResultSet rst = connection.prepareStatement("SELECT * FROM item").executeQuery();
                     while (rst.next()) {
                         String code = rst.getString(1);
                         String description = rst.getString(2);
@@ -98,10 +98,10 @@ public class ItemServlet extends HttpServlet {
                         objectBuilder.add("qtyOnHand", qtyOnHand);
                         objectBuilder.add("unitPrice", unitPrice);
                         arrayBuilder.add(objectBuilder.build());
-                    }
+                    }*/
+                    response.add("data", itemBO.generateItemID());
                     response.add("status", 200);
                     response.add("message", "Done");
-                    response.add("data", arrayBuilder.build());
                     writer.print(response.build());
                     break;
 

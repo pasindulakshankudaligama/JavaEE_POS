@@ -15,8 +15,8 @@ public class ItemBOImpl implements ItemBO {
     ItemDAOImpl itemDAO = (ItemDAOImpl) DAOFactory.getDAOFactory().getDAO(DAOFactory.DAOTypes.ITEM);
 
     @Override
-    public JsonArrayBuilder getAllItems() {
-        return null;
+    public JsonArrayBuilder getAllItems() throws SQLException {
+        return itemDAO.getAll();
     }
 
     @Override

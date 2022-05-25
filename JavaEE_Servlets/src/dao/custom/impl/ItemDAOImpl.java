@@ -9,6 +9,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ItemDAOImpl implements ItemDAO {
@@ -17,8 +18,23 @@ public class ItemDAOImpl implements ItemDAO {
     JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 
     @Override
-    public JsonArrayBuilder getAll() {
-        return null;
+    public JsonArrayBuilder getAll() throws SQLException {
+        Connection connection = ItemServlet.ds.getConnection();
+        ResultSet rst = connection.prepareStatement("SELECT * FROM item").executeQuery();
+        while (rst.next()) {
+            String code = rst.getString(1);
+            String description = rst.getString(2);
+            int qtyOnHand = rst.getInt(3);
+            int unitPrice = rst.getInt(4);
+
+            objectBuilder.add("code", code);
+            objectBuilder.add("description", description);
+            objectBuilder.add("qtyOnHand", qtyOnHand);
+            objectBuilder.add("unitPrice", unitPrice);
+            arrayBuilder.add(objectBuilder.build());
+        }
+        connection.close();
+        return arrayBuilder;
     }
 
     @Override
