@@ -112,6 +112,15 @@ public class OrderPurchaseServlet extends HttpServlet {
                     response.add("status", 200);
                     writer.print(response.build());
                     break;
+
+                case "GENERATE_OID":
+                    response.add("data", ordersBO.generateOrderID());
+                    response.add("message", "Done");
+                    response.add("status", 200);
+                    writer.print(response.build());
+                    break;
+
+
             }
 
         } catch (SQLException e) {

@@ -8,6 +8,7 @@ import dao.custom.impl.OrderDetailsDAOImpl;
 import dto.OrderDTO;
 import servlet.OrderPurchaseServlet;
 
+import javax.json.JsonObjectBuilder;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -50,5 +51,10 @@ public class OrderBOImpl implements OrderBO {
         }
         return false;
 
+    }
+
+    @Override
+    public JsonObjectBuilder generateOrderID() throws SQLException {
+        return orderDAO.generateID();
     }
 }

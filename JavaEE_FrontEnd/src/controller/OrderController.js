@@ -57,7 +57,7 @@ function loadAllCustomerIds() {
                     let option = `<option value="${customer.id}">${customer.id}</option>`;
                     $("#cmb").append(option);
                 }
-            }else{
+            } else {
                 alert(resp.data);
             }
         }
@@ -87,74 +87,74 @@ function loadAllItemCodes() {
                     let option = `<option value="${item.code}">${item.code}</option>`;
                     $("#idCmb").append(option);
                 }
-            }else{
+            } else {
                 alert(resp.data);
             }
         }
     });
 
 
-  /*  let itemHint = `<option disabled selected>Select Item ID</option>`;
-    $("#idCmb").append(itemHint);
+    /*  let itemHint = `<option disabled selected>Select Item ID</option>`;
+      $("#idCmb").append(itemHint);
 
-    for (let i in itemDB) {
-        let option = `<option value="${itemDB[i].getItemCode()}">${itemDB[i].getItemCode()}</option>`;
-        $("#idCmb").append(option);
-    }*/
+      for (let i in itemDB) {
+          let option = `<option value="${itemDB[i].getItemCode()}">${itemDB[i].getItemCode()}</option>`;
+          $("#idCmb").append(option);
+      }*/
 }
 
 
 function selectedCustomer(CustomerId) {
     $.ajax({
-        url:`http://localhost:8080/JavaEE_BackEnd/order?option=SELECTEDCUSDETAILS&cusId=${CustomerId}`,
-        method:"GET",
-        success:function (resp){
+        url: `http://localhost:8080/JavaEE_BackEnd/order?option=SELECTEDCUSDETAILS&cusId=${CustomerId}`,
+        method: "GET",
+        success: function (resp) {
             if (resp.status == 200) {
                 for (const customer of resp.data) {
                     $("#cusName").val(customer.name);
                     $("#salary").val(customer.salary);
                     $("#address").val(customer.address);
                 }
-            }else{
+            } else {
                 alert(resp.data);
             }
         }
     });
-   /* for (const i in customerDB) {
-        if (customerDB[i].getCustomerId() == CustomerId) {
-            let element = customerDB[i];
-            $("#cusName").val(element.getCustomerName());
-            $("#salary").val(element.getCustomerSalary());
-            $("#address").val(element.getCustomerAddress());
-        }
-    }*/
+    /* for (const i in customerDB) {
+         if (customerDB[i].getCustomerId() == CustomerId) {
+             let element = customerDB[i];
+             $("#cusName").val(element.getCustomerName());
+             $("#salary").val(element.getCustomerSalary());
+             $("#address").val(element.getCustomerAddress());
+         }
+     }*/
 }
 
 /* Load Item Data To input Fields */
 function selectedItem(ItemId) {
     $.ajax({
-        url:`http://localhost:8080/JavaEE_BackEnd/order?option=SELECTEDITEMDETAILS&itemCode=${ItemId}`,
-        method:"GET",
-        success:function (resp){
+        url: `http://localhost:8080/JavaEE_BackEnd/order?option=SELECTEDITEMDETAILS&itemCode=${ItemId}`,
+        method: "GET",
+        success: function (resp) {
             if (resp.status == 200) {
                 for (const item of resp.data) {
                     $("#itemName").val(item.itemName);
                     $("#qtyOnHand").val(item.qtyOnHand);
                     $("#price").val(item.unitPrice);
                 }
-            }else{
+            } else {
                 alert(resp.data);
             }
         }
     });
-   /* for (const i in itemDB) {
-        if (itemDB[i].getItemCode() == ItemId) {
-            let element = itemDB[i];
-            $("#itemName").val(element.getItemName());
-            $("#qtyOnHand").val(element.getItemQTY());
-            $("#price").val(element.getUnitPrice());
-        }
-    }*/
+    /* for (const i in itemDB) {
+         if (itemDB[i].getItemCode() == ItemId) {
+             let element = itemDB[i];
+             $("#itemName").val(element.getItemName());
+             $("#qtyOnHand").val(element.getItemQTY());
+             $("#price").val(element.getUnitPrice());
+         }
+     }*/
 }
 
 
@@ -165,7 +165,19 @@ function disableEdit() {
 }
 
 function generateOrderId() {
-    let index = orderDB.length - 1;
+    $.ajax({
+        url: "http://localhost:8080/JavaEE_BackEnd/order?option=GENERATE_OID",
+        method: "GET",
+        success: function (resp) {
+            if (resp.status == 200) {
+                $("#OID").val(resp.data.oId);
+            } else {
+                alert(resp.data);
+            }
+        }
+
+    });
+    /*let index = orderDB.length - 1;
     let id;
     let temp;
     if (index != -1) {
@@ -182,7 +194,7 @@ function generateOrderId() {
         $("#txtOrderId").val("O00-0" + temp);
     } else {
         $("#txtOrderId").val("O00-" + temp);
-    }
+    }*/
 }
 
 function setDate() {
@@ -295,14 +307,14 @@ function discountCal() {
 function purchaseOrder() {
     var obj = {
         order: {
-            orderId:$("#OID").val(),
+            orderId: $("#OID").val(),
             customer: selectedCustomerId,
             orderDate: $("#iDate").val(),
             discount: parseInt($("#discount").val()),
             total: $("#lblFullTotal").text().split(" ")[0],
             subTotal: $("#lblSubTotal").text().split(" ")[0]
         },
-        orderDetail:[]
+        orderDetail: []
     }
 
     for (let i = 0; i < $('#OrderTB tr').length; i++) {
@@ -314,11 +326,11 @@ function purchaseOrder() {
         tblItemTotal = $('#OrderTB').children().eq(i).children().eq(4).text();
 
         var details = {
-            itemCode:tblItemId,
-            itemName:tblItemName,
-            itemPrice:tblItemPrice,
-            itemQty:tblItemQty,
-            itemTotal:tblItemTotal
+            itemCode: tblItemId,
+            itemName: tblItemName,
+            itemPrice: tblItemPrice,
+            itemQty: tblItemQty,
+            itemTotal: tblItemTotal
         }
         obj.orderDetail.push(details);
 
@@ -330,35 +342,35 @@ function purchaseOrder() {
         method: "POST",
         data: JSON.stringify(obj),
         success: function (resp) {
-            if (resp.status==200){
+            if (resp.status == 200) {
                 generateOrderId();
                 clearInputItems();
-            }else {
+            } else {
                 alert(resp.data);
             }
         }
     });
 
-   /* let orderId = $("#oId").val();
-    let customer = selectedCustomerId;
-    let orderDate = $("#iDate").val();
-    let discount = parseInt($("#discount").val());
-    let total = $("#lblFullTotal").text();
-    let subTotal = $("#lblSubTotal").text();
+    /* let orderId = $("#oId").val();
+     let customer = selectedCustomerId;
+     let orderDate = $("#iDate").val();
+     let discount = parseInt($("#discount").val());
+     let total = $("#lblFullTotal").text();
+     let subTotal = $("#lblSubTotal").text();
 
-    var orderObj = new Orders(orderId, customer, orderDate, discount, total, subTotal);
-    orderDB.push(orderObj);
+     var orderObj = new Orders(orderId, customer, orderDate, discount, total, subTotal);
+     orderDB.push(orderObj);
 
-    for (let i = 0; i < $('#OrderTB tr').length; i++) {
+     for (let i = 0; i < $('#OrderTB tr').length; i++) {
 
-        tblItemId = $('#OrderTB').children().eq(i).children().eq(0).text();
-        tblItemName = $('#OrderTB').children().eq(i).children().eq(1).text();
-        tblItemPrice = $('#OrderTB').children().eq(i).children().eq(2).text();
-        tblItemQty = $('#OrderTB').children().eq(i).children().eq(3).text();
-        tblItemTotal = $('#OrderTB').children().eq(i).children().eq(4).text();
+         tblItemId = $('#OrderTB').children().eq(i).children().eq(0).text();
+         tblItemName = $('#OrderTB').children().eq(i).children().eq(1).text();
+         tblItemPrice = $('#OrderTB').children().eq(i).children().eq(2).text();
+         tblItemQty = $('#OrderTB').children().eq(i).children().eq(3).text();
+         tblItemTotal = $('#OrderTB').children().eq(i).children().eq(4).text();
 
-        var orderDetailObj = new OrderDetails(orderId, tblItemId, tblItemName, tblItemPrice, tblItemQty, tblItemTotal);
-        orderDetailsDB.push(orderDetailObj);
-    }*/
+         var orderDetailObj = new OrderDetails(orderId, tblItemId, tblItemName, tblItemPrice, tblItemQty, tblItemTotal);
+         orderDetailsDB.push(orderDetailObj);
+     }*/
 
 }
