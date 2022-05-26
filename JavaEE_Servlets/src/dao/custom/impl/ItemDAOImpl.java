@@ -151,4 +151,14 @@ public class ItemDAOImpl implements ItemDAO {
         connection.close();
         return arrayBuilder;
     }
+
+    @Override
+    public boolean updateQty(String id, int qty) throws SQLException {
+        Connection connection = OrderPurchaseServlet.ds.getConnection();
+        PreparedStatement pstm = connection.prepareStatement("UPDATE item SET qtyOnHand=(qtyOnHand-?) WHERE code=?");
+        pstm.setObject(1, id);
+        pstm.setObject(2, qty);
+        return pstm.executeUpdate() > 0;
+
+    }
 }

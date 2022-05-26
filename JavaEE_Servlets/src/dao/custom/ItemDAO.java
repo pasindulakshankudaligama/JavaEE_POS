@@ -11,4 +11,6 @@ public interface ItemDAO extends CrudDAO<Item, String> {
 
     JsonArrayBuilder loadSelectItemDetails(String id) throws SQLException;
 
+    boolean updateQty(String id, int qty) throws SQLException;
+
 }

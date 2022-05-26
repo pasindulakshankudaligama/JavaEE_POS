@@ -4,6 +4,8 @@ import bo.BOFactory;
 import bo.custom.impl.CustomerBOImpl;
 import bo.custom.impl.ItemBOImpl;
 import bo.custom.impl.OrderBOImpl;
+import dao.DAOFactory;
+import dao.custom.ItemDAO;
 
 import javax.annotation.Resource;
 import javax.json.*;
@@ -29,7 +31,7 @@ public class OrderPurchaseServlet extends HttpServlet {
     CustomerBOImpl customerBO = (CustomerBOImpl) BOFactory.getBoFactory().getBO(BOFactory.BoTypes.CUSTOMER);
     ItemBOImpl itemBO = (ItemBOImpl) BOFactory.getBoFactory().getBO(BOFactory.BoTypes.ITEM);
     OrderBOImpl ordersBO = (OrderBOImpl) BOFactory.getBoFactory().getBO(BOFactory.BoTypes.ORDER);
-
+    ItemDAO itemDAO = (ItemDAO) DAOFactory.getDAOFactory().getDAO(DAOFactory.DAOTypes.ITEM);
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
@@ -206,7 +208,7 @@ public class OrderPurchaseServlet extends HttpServlet {
 
 
             if (pstm.executeUpdate() > 0) {
-                if (updateItem(orderDetailJsonObj.getString("itemCode"), orderDetailJsonObj.getString("itemQty"))) {
+                if (itemDAO.updateQty(items)) {
 
                 } else {
                     return false;
@@ -219,9 +221,10 @@ public class OrderPurchaseServlet extends HttpServlet {
         return true;
     }
     public boolean updateItem(String ItemCode, String itemQty) throws SQLException {
-        PreparedStatement pstm = connection.prepareStatement("UPDATE item SET qtyOnHand=(qtyOnHand-?) WHERE code=?");
+        /*PreparedStatement pstm = connection.prepareStatement("UPDATE item SET qtyOnHand=(qtyOnHand-?) WHERE code=?");
         pstm.setObject(1, itemQty);
         pstm.setObject(2, ItemCode);
-        return pstm.executeUpdate() > 0;
+        return pstm.executeUpdate() > 0;*/
+        return
     }
 }
