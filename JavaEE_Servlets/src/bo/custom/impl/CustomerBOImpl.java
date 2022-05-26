@@ -43,4 +43,14 @@ public class CustomerBOImpl implements CustomerBO {
         return customerDAO.update(new Customer(customerDTO.getId(), customerDTO.getName(), customerDTO.getAddress(), customerDTO.getSalary()));
 
     }
+
+    @Override
+    public JsonArrayBuilder loadAllCusIDs() throws SQLException {
+        return customerDAO.loadCusId();
+    }
+
+    @Override
+    public JsonArrayBuilder loadSelectedCusData(String id) throws SQLException {
+        return null;
+    }
 }

@@ -19,4 +19,8 @@ public interface CustomerBO extends SuperBO {
     boolean deleteCustomer(String id) throws SQLException;
 
     boolean updateCustomer(CustomerDTO customerDTO) throws SQLException;
+
+    JsonArrayBuilder loadAllCusIDs() throws SQLException;
+
+    JsonArrayBuilder loadSelectedCusData(String id) throws SQLException;
 }

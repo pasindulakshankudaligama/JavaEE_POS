@@ -3,6 +3,7 @@ package dao.custom.impl;
 import Entity.Customer;
 import dao.custom.CustomerDAO;
 import servlet.CustomerServlet;
+import servlet.OrderPurchaseServlet;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -118,5 +119,23 @@ public class CustomerDAOImpl implements CustomerDAO {
         boolean b = pstm.executeUpdate() > 0;
         connection.close();
         return b;
+    }
+
+    @Override
+    public JsonArrayBuilder loadCusId() throws SQLException {
+        Connection connection = OrderPurchaseServlet.ds.getConnection();
+        ResultSet rst = connection.prepareStatement("SELECT id FROM customer").executeQuery();
+        while (rst.next()) {
+            String id = rst.getString(1);
+            objectBuilder.add("id", id);
+            arrayBuilder.add(objectBuilder.build());
+        }
+        connection.close();
+        return arrayBuilder;
+    }
+
+    @Override
+    public JsonArrayBuilder loadSelectCusDetails(String id) throws SQLException {
+        return null;
     }
 }
