@@ -134,7 +134,21 @@ public class ItemDAOImpl implements ItemDAO {
     }
 
     @Override
-    public JsonArrayBuilder loadSelectItemDetails(String id) {
-        return null;
+    public JsonArrayBuilder loadSelectItemDetails(String id) throws SQLException {
+        Connection connection = OrderPurchaseServlet.ds.getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT * FROM item WHERE code=?");
+        pstm.setObject(1, id);
+        ResultSet rst = pstm.executeQuery();
+        if (rst.next()) {
+            String itemName = rst.getString(2);
+            String qtyOnHand = rst.getString(3);
+            String unitPrice = rst.getString(4);
+            objectBuilder.add("itemName", itemName);
+            objectBuilder.add("qtyOnHand", qtyOnHand);
+            objectBuilder.add("unitPrice", unitPrice);
+            arrayBuilder.add(objectBuilder.build());
+        }
+        connection.close();
+        return arrayBuilder;
     }
 }

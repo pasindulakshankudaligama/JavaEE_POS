@@ -52,7 +52,7 @@ public class ItemBOImpl implements ItemBO {
     }
 
     @Override
-    public JsonArrayBuilder loadSelectedItemData(String id) {
-        return null;
+    public JsonArrayBuilder loadSelectedItemData(String id) throws SQLException {
+        return itemDAO.loadSelectItemDetails(id);
     }
 }

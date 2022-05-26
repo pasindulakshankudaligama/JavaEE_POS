@@ -22,5 +22,5 @@ public interface ItemBO extends SuperBO {
 
     JsonArrayBuilder loadAllItemIDs() throws SQLException;
 
-    JsonArrayBuilder loadSelectedItemData(String id);
+    JsonArrayBuilder loadSelectedItemData(String id) throws SQLException;
 }

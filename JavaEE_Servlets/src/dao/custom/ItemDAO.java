@@ -9,6 +9,6 @@ import java.sql.SQLException;
 public interface ItemDAO extends CrudDAO<Item, String> {
     JsonArrayBuilder loadItemId() throws SQLException;
 
-    JsonArrayBuilder loadSelectItemDetails(String id);
+    JsonArrayBuilder loadSelectItemDetails(String id) throws SQLException;
 
 }

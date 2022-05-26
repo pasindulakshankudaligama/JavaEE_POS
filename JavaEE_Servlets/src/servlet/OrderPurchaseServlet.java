@@ -33,15 +33,13 @@ public class OrderPurchaseServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
         JsonObjectBuilder response = Json.createObjectBuilder();
         PrintWriter writer = resp.getWriter();
 
         try {
-            connection = ds.getConnection();
+           /* connection = ds.getConnection();
             ResultSet rst;
-            PreparedStatement pstm;
+            PreparedStatement pstm;*/
             String option = req.getParameter("option");
             System.out.println(option);
             switch (option) {
@@ -93,7 +91,7 @@ public class OrderPurchaseServlet extends HttpServlet {
 
                 case "SELECTEDITEMDETAILS":
                     String itemCode = req.getParameter("itemCode");
-                    pstm = connection.prepareStatement("SELECT * FROM item WHERE code=?");
+                    /*pstm = connection.prepareStatement("SELECT * FROM item WHERE code=?");
                     pstm.setObject(1, itemCode);
                     rst = pstm.executeQuery();
                     if (rst.next()) {
@@ -104,8 +102,8 @@ public class OrderPurchaseServlet extends HttpServlet {
                         objectBuilder.add("qtyOnHand", qtyOnHand);
                         objectBuilder.add("unitPrice", unitPrice);
                         arrayBuilder.add(objectBuilder.build());
-                    }
-                    response.add("data", arrayBuilder.build());
+                    }*/
+                    response.add("data", itemBO.loadSelectedItemData(itemCode));
                     response.add("message", "Done");
                     response.add("status", 200);
                     writer.print(response.build());
@@ -117,13 +115,13 @@ public class OrderPurchaseServlet extends HttpServlet {
             response.add("message", "error");
             response.add("status", 400);
             writer.print(response.build());
-        } finally {
+        } /*finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
     }
 
