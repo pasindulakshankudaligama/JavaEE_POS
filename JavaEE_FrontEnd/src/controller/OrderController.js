@@ -1,11 +1,14 @@
 var selectedItemId;
 var selectedCustomerId;
 
-generateOrderId();
-setDate();
-disableEdit();
-loadAllCustomerIds();
-loadAllItemCodes();
+$("#order-click").click(function (){
+    generateOrderId();
+    setDate();
+    disableEdit();
+    loadAllCustomerIds();
+    loadAllItemCodes();
+});
+
 //add to cart
 $("#addBtn").click(function () {
     addItemToCart();

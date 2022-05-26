@@ -42,9 +42,8 @@ public class OrderBOImpl implements OrderBO {
         } finally {
             try {
                 connection.setAutoCommit(true);
-                if (connection != null) {
-                    connection.close();
-                }
+                connection.close();
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }

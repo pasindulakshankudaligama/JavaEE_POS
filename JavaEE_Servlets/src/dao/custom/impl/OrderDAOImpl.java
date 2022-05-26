@@ -48,7 +48,6 @@ public class OrderDAOImpl implements OrderDAO {
     @Override
     public boolean add(Orders orders) throws SQLException {
         Connection connection = OrderPurchaseServlet.ds.getConnection();
-        connection.setAutoCommit(false);
         PreparedStatement pstm = connection.prepareStatement("INSERT INTO orders VALUES(?,?,?,?,?,?)");
         pstm.setObject(1, orders.getOid());
         pstm.setObject(2, orders.getDate());
