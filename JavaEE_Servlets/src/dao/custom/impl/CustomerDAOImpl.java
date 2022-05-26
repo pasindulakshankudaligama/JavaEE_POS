@@ -136,6 +136,20 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public JsonArrayBuilder loadSelectCusDetails(String id) throws SQLException {
-        return null;
+        Connection connection = OrderPurchaseServlet.ds.getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT * FROM customer WHERE id=?");
+        pstm.setObject(1, id);
+        ResultSet rst = pstm.executeQuery();
+        if (rst.next()) {
+            String name = rst.getString(2);
+            String address = rst.getString(3);
+            String salary = rst.getString(4);
+            objectBuilder.add("name", name);
+            objectBuilder.add("address", address);
+            objectBuilder.add("salary", salary);
+            arrayBuilder.add(objectBuilder.build());
+        }
+        connection.close();
+        return arrayBuilder;
     }
 }

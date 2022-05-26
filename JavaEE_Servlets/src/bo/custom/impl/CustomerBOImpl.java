@@ -51,6 +51,6 @@ public class CustomerBOImpl implements CustomerBO {
 
     @Override
     public JsonArrayBuilder loadSelectedCusData(String id) throws SQLException {
-        return null;
+        return customerDAO.loadSelectCusDetails(id);
     }
 }

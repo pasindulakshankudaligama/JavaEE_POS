@@ -45,4 +45,14 @@ public class ItemBOImpl implements ItemBO {
         Item item = new Item(itemDTO.getCode(), itemDTO.getDescription(), itemDTO.getQtyOnHand(), itemDTO.getUnitPrice());
         return itemDAO.update(item);
     }
+
+    @Override
+    public JsonArrayBuilder loadAllItemIDs() throws SQLException {
+        return itemDAO.loadItemId();
+    }
+
+    @Override
+    public JsonArrayBuilder loadSelectedItemData(String id) {
+        return null;
+    }
 }

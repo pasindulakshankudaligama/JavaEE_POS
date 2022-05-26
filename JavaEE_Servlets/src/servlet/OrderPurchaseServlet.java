@@ -59,13 +59,13 @@ public class OrderPurchaseServlet extends HttpServlet {
                     break;
 
                 case "LOADITEMIDS":
-                    rst = connection.prepareStatement("SELECT code FROM item").executeQuery();
+                  /*  rst = connection.prepareStatement("SELECT code FROM item").executeQuery();
                     while (rst.next()) {
                         String code = rst.getString(1);
                         objectBuilder.add("code", code);
                         arrayBuilder.add(objectBuilder.build());
-                    }
-                    response.add("data", arrayBuilder.build());
+                    }*/
+                    response.add("data", itemBO.loadAllItemIDs());
                     response.add("message", "Done");
                     response.add("status", 200);
                     writer.print(response.build());
@@ -73,7 +73,7 @@ public class OrderPurchaseServlet extends HttpServlet {
 
                 case "SELECTEDCUSDETAILS":
                     String cusId = req.getParameter("cusId");
-                    pstm = connection.prepareStatement("SELECT * FROM customer WHERE id=?");
+                    /*pstm = connection.prepareStatement("SELECT * FROM customer WHERE id=?");
                     pstm.setObject(1, cusId);
                      rst = pstm.executeQuery();
                     if (rst.next()) {
@@ -84,8 +84,8 @@ public class OrderPurchaseServlet extends HttpServlet {
                         objectBuilder.add("address", address);
                         objectBuilder.add("salary", salary);
                         arrayBuilder.add(objectBuilder.build());
-                    }
-                    response.add("data", arrayBuilder.build());
+                    }*/
+                    response.add("data", customerBO.loadSelectedCusData(cusId));
                     response.add("message", "Done");
                     response.add("status", 200);
                     writer.print(response.build());

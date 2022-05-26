@@ -3,11 +3,11 @@ package dao.custom.impl;
 import Entity.Item;
 import dao.custom.ItemDAO;
 import servlet.ItemServlet;
+import servlet.OrderPurchaseServlet;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
-import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -118,5 +118,23 @@ public class ItemDAOImpl implements ItemDAO {
         boolean b = pstm.executeUpdate() > 0;
         connection.close();
         return b;
+    }
+
+    @Override
+    public JsonArrayBuilder loadItemId() throws SQLException {
+        Connection connection = OrderPurchaseServlet.ds.getConnection();
+        ResultSet rst = connection.prepareStatement("SELECT code FROM item").executeQuery();
+        while (rst.next()) {
+            String code = rst.getString(1);
+            objectBuilder.add("code", code);
+            arrayBuilder.add(objectBuilder.build());
+        }
+        connection.close();
+        return arrayBuilder;
+    }
+
+    @Override
+    public JsonArrayBuilder loadSelectItemDetails(String id) {
+        return null;
     }
 }
